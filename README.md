@@ -1,9 +1,9 @@
 # Crewboard
 
-> **A PM agent that runs your project on GitHub Projects — with a crew of specialized subagents doing the work.**
+> **A PM agent that runs your project board — with a crew of specialized subagents doing the work.**
 >
 > Claude Code 위에서 동작하는 멀티 에이전트 프로젝트 수행 체계.
-> PM 에이전트가 GitHub Projects를 단일 진실 공급원(SSOT)으로 삼아 오케스트레이션하고,
+> PM 에이전트가 GitHub Projects 또는 GitLab 이슈 보드를 프로젝트 현황의 기준점(SSOT)으로 삼아 오케스트레이션하고,
 > 기획 → 설계 → 구현 → 테스트 전 단계를 전문화된 서브 에이전트가 수행합니다.
 
 <p align="left">
@@ -22,7 +22,7 @@
 Crewboard는 **프로젝트 수행 체계** 자체를 에이전트 팀으로 옮깁니다.
 
 - **요구사항은 받는 것, 발명하는 것이 아니다** — 사람이 작성하는 인테이크 템플릿이 모든 요구사항의 원천이며, 에이전트는 정제·구조화·검증만 합니다
-- **보드가 곧 기억이다** — 모든 상태·산출물·결정이 GitHub Projects와 이슈에 남아, 세션이 끊겨도 보드만 읽으면 어디서든 재개됩니다
+- **보드가 곧 공식 기록이다** — 모든 상태·산출물·결정이 GitHub Projects/GitLab 이슈 보드에 남아, 세션이 끊겨도 보드만 읽으면 어디서든 재개됩니다
 - **검증 없이는 Done이 없다** — 만든 에이전트와 검증하는 에이전트를 분리하고(builder–validator), 수용 기준(AC) 대조를 통과해야만 상태가 전이됩니다
 - **규약이 아니라 권한으로 막는다** — `git push`, 머지, 보드 조작은 프롬프트 지시가 아니라 권한 설정과 훅으로 차단합니다
 - **프로젝트가 끝나면 팀이 똑똑해진다** — 회고에서 검증된 해법을 스킬로 적재해, 다음 프로젝트의 에이전트가 같은 문제를 다시 풀지 않습니다
@@ -40,7 +40,7 @@ flowchart TB
         T[tester<br/>테스트]
         R[reviewer<br/>독립 검증]
     end
-    B[("📋 GitHub Projects / Issues<br/>단일 진실 공급원 (SSOT)")]
+    B[("📋 Project Board / Issues<br/>프로젝트 기준점 (SSOT)")]
 
     H <-->|승인 게이트| PM
     PM -->|디스패치 + AC| CREW
@@ -78,7 +78,7 @@ PM의 컨텍스트를 보호합니다.
 ```bash
 # 1. 새 프로젝트 폴더에 가이드 문서를 복사
 mkdir my-project && cd my-project
-cp /path/to/multi-agent-project-system-design.md .
+cp /path/to/CREWBOARD.md .
 
 # 2. Claude Code 실행
 claude
@@ -152,5 +152,5 @@ project-root/
 ---
 
 <p align="center">
-  <sub>Built with Claude Code · 설계 문서 전문은 <a href="docs/GUIDE.md">docs/GUIDE.md</a></sub>
+  <sub>Built with Claude Code · 설계 문서 전문은 <a href="CREWBOARD.md">CREWBOARD.md</a></sub>
 </p>
