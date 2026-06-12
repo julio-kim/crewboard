@@ -1,4 +1,4 @@
-# Crewboard
+# 🎯 Crewboard
 
 > **A PM agent that runs your project board — with a crew of specialized subagents doing the work.**
 >
@@ -23,7 +23,7 @@ Crewboard는 설치할 패키지가 없습니다. 설계 문서 한 장([CREWBOA
 서브 에이전트 크루, 보드 연동, 가드레일까지 프로젝트 수행 체계 전체가 구성됩니다.
 
 ```text
-CREWBOARD.md 복사  →  claude 실행  →  "부트스트랩 프로토콜대로 구성해"  →  /kickoff
+CREWBOARD.md 복사  →  claude 실행 (Opus급 모델)  →  "부트스트랩 프로토콜대로 구성해"  →  /kickoff
 ```
 
 이후에는 PM 에이전트가 이슈 보드를 기준점 삼아 기획 → 설계 → 구현 → 테스트를
@@ -85,6 +85,8 @@ Crewboard의 모든 구성은 다섯 가지 원칙 위에 서 있습니다.
 
 - [Claude Code](https://code.claude.com/docs) 설치 및 인증
 - `gh` CLI (GitHub) 또는 `glab` CLI (GitLab) — 자가 호스팅(GHE / self-managed) 지원
+- 권장 모델: Claude Code 기본 모델(Opus급) 이상 — 부트스트랩·PM 세션 공통.
+  창의성보다 긴 문서에 대한 지시 충실도가 중요한 체계라, 그 이하 모델은 항목 누락 위험이 있습니다
 
 ### 부트스트랩 (3단계)
 
