@@ -33,6 +33,7 @@ CREWBOARD.md 복사  →  claude 실행 (Opus급 모델)  →  "부트스트랩 
 ## 🏗️ 아키텍처
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 flowchart TB
     H["👤 Human<br/>목표 제시 · 게이트 승인 · 방향 결정"]
     PM["🎯 PM Agent (Claude Code 메인 세션)<br/>오케스트레이션 · 검증 게이트 · 상태 전이 전권"]
@@ -50,6 +51,16 @@ flowchart TB
     CREW -->|표준 REPORT 요약| PM
     PM <-->|상태 전이 · 증거 게시| B
     CREW -.->|산출물 · 코멘트| B
+
+    classDef human fill:#fafafa,stroke:#9e9e9e,color:#212121
+    classDef pm fill:#616161,stroke:#424242,color:#ffffff
+    classDef crew fill:#e0e0e0,stroke:#9e9e9e,color:#212121
+    classDef board fill:#bdbdbd,stroke:#757575,color:#212121
+    class H human
+    class PM pm
+    class P,A,D,T,R crew
+    class B board
+    style CREW fill:#f5f5f5,stroke:#bdbdbd,color:#424242
 ```
 
 핵심 제약을 그대로 설계에 반영했습니다: Claude Code의 서브에이전트는 다른
