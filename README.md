@@ -1,11 +1,5 @@
 # 🎯 Crewboard
 
-> **A PM agent that runs your project board — with a crew of specialized subagents doing the work.**
->
-> Claude Code 위에서 동작하는 멀티 에이전트 프로젝트 수행 체계.
-> PM 에이전트가 GitHub Projects 또는 GitLab 이슈 보드를 프로젝트 현황의 기준점(SSOT)으로 삼아 오케스트레이션하고,
-> 기획 → 설계 → 구현 → 테스트 전 단계를 전문화된 서브 에이전트가 수행합니다.
-
 <p align="left">
   <img src="https://img.shields.io/badge/Claude%20Code-Subagents%20%2B%20Skills-d97757?logo=anthropic&logoColor=white" alt="Claude Code" />
   <img src="https://img.shields.io/badge/version-1.5-blue" alt="Version" />
@@ -13,6 +7,12 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs Welcome" />
 </p>
+
+> **A PM agent that runs your project board — with a crew of specialized subagents doing the work.**
+>
+> Claude Code 위에서 동작하는 멀티 에이전트 프로젝트 수행 체계.
+> PM 에이전트가 GitHub Projects 또는 GitLab 이슈 보드를 프로젝트 현황의 기준점(SSOT)으로 삼아 오케스트레이션하고,
+> 기획 → 설계 → 구현 → 테스트 전 단계를 전문화된 서브 에이전트가 수행합니다.
 
 ---
 
