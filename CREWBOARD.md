@@ -533,6 +533,8 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
   (보드에는 전체 범위가 보이되, 상세 이슈는 첫 마일스톤분만 → G2 SSOT 불침해)
 - 후속 마일스톤: 해당 마일스톤이 설계(Phase 2)에 진입하는 직전(Phase 2 step 0)에
   PM → planner 를 디스패치해 해당 마일스톤 FR의 AC를 정제하고 이슈를 생성한다.
+- **GitHub 주의**: "이슈 생성"은 3단계 1쌍(create + item-add + item-edit Backlog) —
+  §7.1 gh CLI 블록 참조. create 만으로는 보드에 올라오지 않는다.
 
 **발급 위치와 회수 흐름**: 발급은 **프로젝트 루트**에 `INTAKE-<영역>.md` 로
 한다 (사람이 바로 찾아 작성할 수 있도록). 발급 시 PM 은 반드시
@@ -619,6 +621,7 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
    → **[사람 게이트] 분할 승인**
    → 보드에 **마일스톤·트래킹 이슈 골격 전체 + 첫 마일스톤 백로그 이슈만** 생성
       (rolling-wave 미적용 소형 프로젝트는 전 마일스톤 이슈 일괄 생성 — §4.6.1a 참고)
+      ⚠️ GitHub 의 경우 이슈 생성은 3단계 1쌍(§7.1): create → item-add → item-edit(Backlog)
 
 ### 4.6.4 요구사항 변경
 
@@ -1193,6 +1196,15 @@ description: >
   - 일정 리스크: 마일스톤 잔여 이슈 대비 진행률 경고
   - 재작업 한도 도달
 
+## 5a. 보드 일관성 규칙 (GitHub)
+  - 이슈 생성은 항상 **3단계 1쌍**: `gh issue create` → `gh project item-add` →
+    `item-edit(Status=Backlog)`. 세 번째를 생략하면 보드에 Status 없는 유령 항목이 생긴다.
+    (GitLab 은 `status::backlog` 라벨이 보드 컬럼이므로 생성 1단계 — 두·세 번째 불필요)
+  - 신규 이슈의 초기 Status 는 **Backlog**. Todo 승격은 `/cb:plan-sprint` 가 수행한다.
+    Backlog 를 건너뛰고 Todo 로 바로 넣지 않는다.
+  - 이슈 일괄 생성 직후 `gh project item-list` 로 보드 항목 수 == 생성 수를 확인한다.
+    불일치 시 누락분을 item-add → item-edit(Backlog) 로 보정한다.
+
 ## 6. 현황 보고 양식 (/cb:status)
 
   ## 프로젝트 현황 — <날짜>
@@ -1256,10 +1268,15 @@ Backlog → Todo → In Progress → Review → Testing → Done
 gh project item-list <PROJECT_NUMBER> --owner <ORG> --format json \
   | jq '[.items[] | {title, status: .status, number: .content.number}]'
 
-# 이슈 생성 (+보드 추가)
-gh issue create --title "..." --body-file /tmp/issue-body.md \
-  --label "phase:구현" --milestone "<MS>"
-gh project item-add <PROJECT_NUMBER> --owner <ORG> --url <ISSUE_URL>
+# 이슈 생성 — ⚠️ 3단계 1쌍. item-add 누락 = 보드 누락 = G2(SSOT) 위반.
+#            gh issue create 만으로는 Projects v2 보드에 안 올라온다.
+#            아래 세 줄은 분리 실행 금지.
+URL=$(gh issue create --title "..." --body-file /tmp/issue-body.md \
+  --label "phase:구현" --milestone "<MS>")
+ITEM_ID=$(gh project item-add <PROJECT_NUMBER> --owner <ORG> --url "$URL" --format json | jq -r '.id')
+# 신규 이슈의 초기 Status = Backlog (Todo 승격은 /cb:plan-sprint 가 수행)
+gh project item-edit --id "$ITEM_ID" --project-id <PID> \
+  --field-id <STATUS_FIELD_ID> --single-select-option-id <BACKLOG_OPTION_ID>
 
 # 상태 전이 (PM 전권)
 gh project item-edit --id <ITEM_ID> --project-id <PID> \
@@ -1435,9 +1452,11 @@ GitLab 선택 시 §7.1~7.3 을 다음과 같이 치환한다 (platform-ops 스�
 # 보드 현황 읽기
 glab issue list --label "status::in-progress" --output json
 
-# 이슈 생성 (템플릿 사용)
+# 이슈 생성 — GitLab 은 status::backlog 라벨이 곧 보드 컬럼이므로 생성=등록 1단계.
+#            (별도 item-add 없음 — GitHub Projects v2 와 달리 2·3단계 불필요)
+#            신규 이슈의 초기 Status = backlog (Todo 승격은 /cb:plan-sprint 가 수행)
 glab issue create --title "..." --description "$(cat /tmp/body.md)" \
-  --label "phase::구현,priority::P1,status::todo" --milestone "<MS>"
+  --label "phase::구현,priority::P1,status::backlog" --milestone "<MS>"
 
 # 상태 전이 (PM 전권) — 스코프드 라벨은 교체 방식
 glab issue update <번호> --label "status::review"   # 같은 스코프 기존 라벨 자동 해제
@@ -1544,6 +1563,7 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
    **[사람 게이트]** 분할 승인 → 마일스톤 확정
    → 보드에 **마일스톤·트래킹 이슈 골격 전체 + 첫 마일스톤 백로그 이슈만** 생성
      (rolling-wave 미적용 소형 프로젝트는 전 마일스톤 백로그 일괄 생성 — §4.6.1a)
+     ⚠️ GitHub: 이슈 생성은 3단계 1쌍 — §7.1 gh CLI 블록 참조
 7. 이후 변경은 변경 요청 이슈(§7.5.4)로만 — 인테이크 파일은 불변
 
 ### Phase 2 — 설계
@@ -1556,6 +1576,7 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 3. PM → reviewer: 설계 리뷰 (요구사항 추적성 — 모든 FR 이 설계에 매핑되는가 / **UX 화면↔FR 매핑 포함**)
 4. **[사람 게이트]** 아키텍처/스택/UX 승인
 5. PM: WBS → 구현 이슈 일괄 생성 (이슈당 AC 필수, 반나절~하루 크기 / **프론트 이슈는 UX 명세 절을 참조에 포함**)
+   ⚠️ GitHub: 이슈 생성은 3단계 1쌍(§7.1) — 생성 후 item-list 로 보드 항목 수 일치 확인
 
 ### Phase 3~4 — 구현·테스트 (이슈 단위 파이프라인)
 - §6-2 사이클 반복. `/cb:run 3` 처럼 소수 이슈를 묶어 진행
