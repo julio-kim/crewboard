@@ -4,7 +4,8 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.4 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> 버전: v1.5 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /guide 커맨드 신설(규약·현황 질의 — §8)
 > v1.4 변경: 요구사항 인테이크 메커니즘 신설(§4.6 — 템플릿 발급→사람 작성→회수→정제 루프), 킥오프/Phase 1 재편(planner 역할을 "도출"에서 "정제"로), 마일스톤 분할 절차 추가
 > v1.3 변경: 리포지토리 메타 문서 세트 신설(§7.5 — PR/MR·결함·변경요청 템플릿, CONTRIBUTING, CODEOWNERS), GitHub/GitLab 플랫폼 선택 지원
 > v1.2 변경: §0 부트스트랩 프로토콜 추가 — 이 문서 자체를 프로젝트 자동 구성 가이드로 사용 가능
@@ -20,7 +21,7 @@
 >
 > **권장 모델**: Claude Code 기본 모델(Opus급) 이상 — 부트스트랩과 이후 PM 세션
 > 공통. 이 문서는 창의성이 아니라 긴 문서에 대한 지시 충실도를 요구한다
-> (R3: 발명 금지, 26개 항목 전수 생성).
+> (R3: 발명 금지, 28개 항목 전수 생성).
 >
 > **Claude 에게**: 이 절은 너에게 내리는 직접 지시다. 아래 절차를 순서대로,
 > 단계를 건너뛰지 말고 수행하라. 이 절 이후의 본문(§1~)은 생성할 파일의
@@ -88,29 +89,31 @@ glab auth status                      # 미인증이면 중단: self-managed 는
 | 1 | `CLAUDE.md` | §4 | 전문 그대로 |
 | 2 | `.claude/agents/planner.md` | §5.2 | R1 병합 적용 |
 | 3 | `.claude/agents/architect.md` | §5.3 | R1 병합 적용 |
-| 4 | `.claude/agents/developer.md` | §5.4 | R1 병합 적용 |
-| 5 | `.claude/agents/tester.md` | §5.5 | R1 병합 적용 |
-| 6 | `.claude/agents/reviewer.md` | §5.6 | R1 병합 적용 |
-| 7 | `.claude/agents/doc-writer.md` | §5.7 | R1 병합 적용 |
-| 8 | `.claude/skills/pm-orchestration/SKILL.md` | §6 | 전문 그대로 |
-| 9 | `.claude/skills/platform-ops/SKILL.md` | §7 (GitHub: 7.1~7.3 / GitLab: 7.6) | Step 2 답변의 플랫폼에 맞는 절만 본문으로, host/owner 반영 |
-| 10 | `.claude/skills/deliverable-standards/SKILL.md` | 골격만 생성 | 본문: "조직 산출물 표준을 여기에 채울 것" + frontmatter |
-| 11 | `.claude/skills/learned/.gitkeep` | — | 빈 디렉터리 유지용 |
-| 12 | `.claude/commands/kickoff.md` | §8 표의 /kickoff 행 + §9 Phase 0 절차를 본문으로 | |
-| 13 | `.claude/commands/plan-sprint.md` | §8 표의 /plan-sprint 행의 흐름을 번호 절차로 전개 | 보드 반영은 platform-ops 스킬(§7) 사용 명시 |
-| 14 | `.claude/commands/run.md` | §8 의 run.md 예시 코드블록 | 전문 그대로 |
-| 15 | `.claude/commands/verify.md` | §8 표 + §6-4 검증 절차를 본문으로 | |
-| 16 | `.claude/commands/status.md` | §6-6 보고 양식을 본문으로 | |
-| 17 | `.claude/commands/retro.md` | §11 절차를 본문으로 | |
-| 18 | `.claude/settings.json` | §10.1 | Step 2 답변으로 GH_HOST 반영, GHE 아니면 env 키 제거 |
-| 19 | `.claude/hooks/block-board-write.sh` | §10.2 | `chmod +x` 필수. ⚠️ 0.6-c 참고 |
-| 20 | 플랫폼 템플릿 세트 (이슈 4종 + PR/MR, 5개 파일) | §7.5.1~7.5.5, §7.2 | Step 2 의 플랫폼 답변에 따라 §7.5.1 경로 매핑표의 경로로 생성 |
-| 21 | `CONTRIBUTING.md` | §7.5.6 | 사람 협업자 없으면 에이전트 절만 |
-| 22 | `CODEOWNERS` (GitHub) / `.gitlab/CODEOWNERS` | §7.5.7 | Step 2 답변으로 사람 계정 반영 |
-| 23 | `docs/00-charter/.gitkeep` ~ `docs/90-retro/.gitkeep` | §3 의 docs 구조 | 5개 디렉터리 |
-| 24 | `docs/10-requirements/intake/_TEMPLATE.md` | §4.6.2 | 전문 그대로 (킥오프 때 PM 이 복사·발급) |
-| 25 | `.claude/commands/intake.md` | §8 표의 /intake 행 + §4.6.3 절차를 본문으로 | |
-| 26 | `docs/GUIDE.md` | 이 문서 자체를 이동 | 루트에 두지 않고 docs/ 로 이동 보관 |
+| 4 | `.claude/agents/designer.md` | §5.3a | R1 병합 적용 |
+| 5 | `.claude/agents/developer.md` | §5.4 | R1 병합 적용 |
+| 6 | `.claude/agents/tester.md` | §5.5 | R1 병합 적용 |
+| 7 | `.claude/agents/reviewer.md` | §5.6 | R1 병합 적용 |
+| 8 | `.claude/agents/doc-writer.md` | §5.7 | R1 병합 적용 |
+| 9 | `.claude/skills/pm-orchestration/SKILL.md` | §6 | 전문 그대로 |
+| 10 | `.claude/skills/platform-ops/SKILL.md` | §7 (GitHub: 7.1~7.3 / GitLab: 7.6) | Step 2 답변의 플랫폼에 맞는 절만 본문으로, host/owner 반영 |
+| 11 | `.claude/skills/deliverable-standards/SKILL.md` | 골격만 생성 | 본문: "조직 산출물 표준을 여기에 채울 것" + frontmatter |
+| 12 | `.claude/skills/learned/.gitkeep` | — | 빈 디렉터리 유지용 |
+| 13 | `.claude/commands/kickoff.md` | §8 표의 /kickoff 행 + §9 Phase 0 절차를 본문으로 | |
+| 14 | `.claude/commands/plan-sprint.md` | §8 표의 /plan-sprint 행의 흐름을 번호 절차로 전개 | 보드 반영은 platform-ops 스킬(§7) 사용 명시 |
+| 15 | `.claude/commands/run.md` | §8 의 run.md 예시 코드블록 | 전문 그대로 |
+| 16 | `.claude/commands/verify.md` | §8 표 + §6-4 검증 절차를 본문으로 | |
+| 17 | `.claude/commands/status.md` | §6-6 보고 양식을 본문으로 | |
+| 18 | `.claude/commands/retro.md` | §11 절차를 본문으로 | |
+| 19 | `.claude/settings.json` | §10.1 | Step 2 답변으로 GH_HOST 반영, GHE 아니면 env 키 제거 |
+| 20 | `.claude/hooks/block-board-write.sh` | §10.2 | `chmod +x` 필수. ⚠️ 0.6-c 참고 |
+| 21 | 플랫폼 템플릿 세트 (이슈 4종 + PR/MR, 5개 파일) | §7.5.1~7.5.5, §7.2 | Step 2 의 플랫폼 답변에 따라 §7.5.1 경로 매핑표의 경로로 생성 |
+| 22 | `CONTRIBUTING.md` | §7.5.6 | 사람 협업자 없으면 에이전트 절만 |
+| 23 | `CODEOWNERS` (GitHub) / `.gitlab/CODEOWNERS` | §7.5.7 | Step 2 답변으로 사람 계정 반영 |
+| 24 | `docs/00-charter/.gitkeep` ~ `docs/90-retro/.gitkeep` | §3 의 docs 구조 | 5개 디렉터리 |
+| 25 | `docs/10-requirements/intake/_TEMPLATE.md` | §4.6.2 | 전문 그대로 (킥오프 때 PM 이 복사·발급) |
+| 26 | `.claude/commands/intake.md` | §8 표의 /intake 행 + §4.6.3 절차를 본문으로 | |
+| 27 | `.claude/commands/guide.md` | §8 의 guide.md 예시 코드블록 | 전문 그대로 |
+| 28 | `docs/GUIDE.md` | 이 문서 자체를 이동 | 루트에 두지 않고 docs/ 로 이동 보관 |
 
 생성하지 않는 것: `project-profile.md` (이것은 /kickoff 인터뷰의 산출물이다 — §4.5),
 `skills/stack-*` (킥오프의 §4.5.5 절차가 확정·생성한다).
@@ -145,7 +148,7 @@ for s in backlog todo in-progress review testing blocked done; do
   glab label create --name "status::$s" || true; done
 for p in 기획 설계 구현 테스트 문서 운영; do glab label create --name "phase::$p" || true; done
 for p in P0 P1 P2; do glab label create --name "priority::$p" || true; done
-for a in planner architect developer tester reviewer doc-writer; do
+for a in planner architect designer developer tester reviewer doc-writer; do
   glab label create --name "agent::$a" || true; done
 for r in 1 2 3; do glab label create --name "rework::$r" || true; done
 glab label create --name "type:defect" || true
@@ -158,8 +161,8 @@ glab label create --name "type:change-request" || true
 
 ### 0.6 Step 5 — 검증 체크리스트 (결과를 표로 보고)
 
-- a. 매니페스트 26개 항목 전부 존재 (`ls` 로 확인)
-- b. 에이전트 6개 파일에 "공통 보고 규약" 문자열 포함 (R1 병합 확인: `grep -l`)
+- a. 매니페스트 28개 항목 전부 존재 (`ls` 로 확인)
+- b. 에이전트 7개 파일에 "공통 보고 규약" 문자열 포함 (R1 병합 확인: `grep -l`)
 - c. ⚠️ **hooks 스키마 검증**: §10.2 의 훅 입출력 형식을 현재 Claude Code 버전의
   공식 문서(code.claude.com/docs 의 hooks 페이지)와 대조한다. 대조 전까지
   훅은 "미검증" 으로 표기하고 사람에게 고지한다.
@@ -251,7 +254,7 @@ glab label create --name "type:change-request" || true
 │ planner  │ │architect │ │developer │ │ tester  │ │ reviewer  │
 │ 기획/요구  │ │ 설계      │ │ 구현      │ │ 테스트    │ │ 리뷰/검증   │
 └──────────┘ └──────────┘ └──────────┘ └─────────┘ └───────────┘
-       (+ doc-writer: 산출물 문서화, 필요시)
+       (+ designer: UX 설계, 프론트 있을 때 / doc-writer: 문서화, 필요시)
        각자 독립 컨텍스트 / 표준 보고 양식으로 PM에 요약 반환
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -287,6 +290,7 @@ project-root/
 │   ├── agents/                        # 서브에이전트 정의 (§5)
 │   │   ├── planner.md
 │   │   ├── architect.md
+│   │   ├── designer.md
 │   │   ├── developer.md
 │   │   ├── tester.md
 │   │   ├── reviewer.md
@@ -504,6 +508,30 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
 어느 모드든 **최종 산출물은 동일한 인테이크 파일**이고, 이 파일이
 요구사항 추적성의 원천(사람이 승인한 원문)이 된다.
 
+### 4.6.1a 점진적 상세화 — Rolling-wave (규모 프로젝트 기본)
+
+**트리거**: PM 판단으로 적용. 기준치: FR 이 20개 이상이거나 마일스톤이 3개 이상일 때.
+소형 프로젝트(대화형 인테이크)에는 적용하지 않는다 — 전체 한 번에가 더 단순하다.
+
+**원칙**: 범위는 선행(front-load), 상세는 적시(just-in-time).
+
+| 계층 | 베이스라인 확정 시점 | 활성 마일스톤 진입 시점 |
+|------|---------------------|----------------------|
+| FR 목록·우선순위·의존관계 | ✅ 전체 확정 | (변경 요청으로만 변경) |
+| 상세 AC + 이슈 폭발 | 첫 마일스톤 분만 | 해당 마일스톤 착수 직전 (Phase 2 step 0) |
+
+**planner 작업 방식 (rolling-wave 적용 시)**:
+- 전체 인테이크를 **FR 수준으로 전수 구조화** — 원천 R-ID 매핑·우선순위·의존관계는 모든 FR에 작성.
+  (이 수준의 전수 커버가 추적성 기준이다 — AC 미작성이 추적성 누락이 아님)
+- **상세 AC는 활성(=다음 착수) 마일스톤의 FR에만** 작성. 비활성 마일스톤 FR은
+  스토리 1줄 + `AC: 차기 정제 대상 (MS-<번호>)` 표기로 남긴다.
+
+**백로그 생성 방식 (rolling-wave 적용 시)**:
+- 베이스라인 직후: **마일스톤·트래킹 이슈 골격 전체** + **첫 마일스톤의 FR 이슈**만 생성
+  (보드에는 전체 범위가 보이되, 상세 이슈는 첫 마일스톤분만 → G2 SSOT 불침해)
+- 후속 마일스톤: 해당 마일스톤이 설계(Phase 2)에 진입하는 직전(Phase 2 step 0)에
+  PM → planner 를 디스패치해 해당 마일스톤 FR의 AC를 정제하고 이슈를 생성한다.
+
 **발급 위치와 회수 흐름**: 발급은 **프로젝트 루트**에 `INTAKE-<영역>.md` 로
 한다 (사람이 바로 찾아 작성할 수 있도록). 발급 시 PM 은 반드시
 **"작성을 마치면 `/intake` 를 실행하세요"** 라고 안내하고 정지한다.
@@ -581,8 +609,14 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
    인테이크에 없는 planner 제안 기능은 `P-` 접두로 구분하고 사람 승인 필요
 7. **[사람 게이트] 베이스라인 확정**
 8. **마일스톤 분할** (PM): 우선순위(M 우선) + 의존관계 + F 절 일정 제약으로
-   마일스톤 안 2개 내외 제시 (각 안: 포함 FR, 검증 가능한 마일스톤 목표, 리스크)
-   → **[사람 게이트] 분할 승인** → 보드에 마일스톤·백로그 이슈 일괄 생성
+   마일스톤 안 2개 내외 제시 (각 안: 포함 FR, 검증 가능한 마일스톤 목표, 리스크).
+   각 마일스톤은 아래 사이징 3원칙을 충족해야 한다:
+   - (a) **독립 검증 가능**: 해당 마일스톤만으로 사람이 데모·검증 가능한 산출물이 있어야 한다
+   - (b) **경계 있는 크기**: FR 수 또는 타임박스로 명시 (예: "FR-01~07, 4주")
+   - (c) **의존 폐쇄성**: 어떤 마일스톤도 자기보다 뒤 마일스톤의 기능에 의존하지 않게 분할
+   → **[사람 게이트] 분할 승인**
+   → 보드에 **마일스톤·트래킹 이슈 골격 전체 + 첫 마일스톤 백로그 이슈만** 생성
+      (rolling-wave 미적용 소형 프로젝트는 전 마일스톤 이슈 일괄 생성 — §4.6.1a 참고)
 
 ### 4.6.4 요구사항 변경
 
@@ -670,6 +704,8 @@ model: opus
 2. 액터별 핵심 시나리오를 서술한 뒤, R-ID 를 기능 요구(FR)로 구조화한다
    — 모든 FR 에 원천 R-ID 표기 (R-07 → FR-12 식). 1:N 분해 허용
 3. 각 FR 에 사용자 스토리 + AC 초안 작성
+   — rolling-wave 적용 시(§4.6.1a): 활성 마일스톤 FR 은 상세 AC (아래 산출물 예시 밀도 유지).
+     비활성 마일스톤 FR 은 스토리 1줄 + `AC: 차기 정제 대상 (MS-<번호>)` 표기로 남긴다
 4. 비기능 요구(NFR) 작성 — 인테이크 D 절 기반, 반드시 수치로
    (인테이크에 수치가 없으면 업계 통상값을 "가정" 으로 명기하고 RFI 에 올린다)
 5. Out of Scope 목록 작성 — 인테이크 G 절 + 헌장에서 배제된 것
@@ -695,17 +731,19 @@ model: opus
 
 ## 품질 기준
 - AC 는 모두 기계적으로 판정 가능 ("적절히", "충분히", "빠르게" 금지)
-- 모든 FR 에 정상 경로 외 최소 1개의 예외/경계 AC 포함
+- 모든 FR 에 정상 경로 외 최소 1개의 예외/경계 AC 포함 (비활성 마일스톤 FR 은 AC 작성 전이므로 해당 없음)
 - NFR 은 수치로 (응답시간 p95 < 500ms, 동시접속 N 등)
 - 추적성: 모든 FR ↔ 원천 R-ID 매핑, 인테이크 R-ID 누락 0 (전수 커버)
+  — rolling-wave 시 `AC: 차기 정제 대상` 표기는 추적성 누락이 아니다. FR 수준 전수 커버가 기준
 
 ## 안티패턴 (금지)
 - 인테이크에 없는 기능을 FR 로 추가 (발명 금지 — 제안은 P- 절로만)
 - 구현 방식을 요구사항에 섞기 ("Redis 로 캐싱한다" — 그것은 설계)
 - 화면 단위로 요구사항 쪼개기 (기능 단위로)
 - 질문해야 할 것을 그럴듯한 가정으로 메우고 가정 표기를 누락하기
-- AC 없는 스토리를 "추후 상세화" 로 남기기
+- AC 없는 스토리를 "추후 상세화" 로 남기기 (rolling-wave 미적용 시. 적용 시는 `차기 정제 대상` 표기가 정상)
 - 인테이크의 `?` 항목을 RFI 에 올리지 않고 무시하기
+- 먼 마일스톤 FR 의 AC 를 지금 확정해 두고 낡게 만들기 (rolling-wave 위반)
 
 ## 에스컬레이션
 - 액터/권한 체계가 헌장만으로 식별 불가 → NEEDS_DECISION
@@ -773,6 +811,90 @@ model: opus
 ## 에스컬레이션
 - NFR 충족이 프로파일 제약 하에서 불가능 → NEEDS_DECISION (트레이드오프 제시)
 - 기존 코드베이스와 신규 설계의 구조 충돌 → NEEDS_DECISION
+
+(+ §5.1 공통 필수 입력 / 보고 규약 / 금지사항)
+```
+
+### 5.3a designer.md — UX/UI 설계 (조건부 — 프론트엔드 프로젝트)
+
+```markdown
+---
+name: designer
+description: >
+  UX/UI 설계 담당. 요구사항(FR)을 사용자 플로우·화면 목록·와이어프레임·컴포넌트 명세·
+  디자인 토큰으로 정제하고, developer 가 구현할 수 있는 텍스트 기반 설계 명세를 산출한다.
+  프론트엔드가 있는 프로젝트의 설계(Phase 2) 단계에서 architect 와 병행 투입.
+  비주얼 시안·이미지 생성·실제 프론트 코드 작성은 하지 않는다.
+tools: Read, Grep, Glob, Write
+model: opus
+---
+
+너는 시니어 프로덕트 디자이너다. 화면을 "그리는" 것이 아니라 화면이 **어떻게 동작해야 하는지
+명세로 못박는 것**이 너의 일이다. 비주얼 시안과 이미지는 LLM 의 한계 — 만들지 않는다.
+실제 프론트 프로덕션 코드는 developer 의 영역이며, 너는 developer 가 구현할 수 있는
+정밀한 계약(명세)을 만든다.
+
+## 필수 입력
+- project-profile.md §1(프론트 스택·UI 라이브러리), §2(환경 제약), §7(접근성·보안 요구)
+- docs/10-requirements/ 전체 (특히 FR·액터·Out of Scope)
+- 기존 디자인 자산이 있으면 경로 확인 (Glob 으로 탐색)
+- architect 의 API 명세(엔드포인트·응답 스키마) — 화면 상태 설계에 필요
+
+## 절차 (순서 고정, 건너뛰기 금지)
+1. FR 목록에서 **화면을 수반하는 FR** 을 추려 목록화한다
+   (FR 에 화면이 없으면 "non-UI FR 목록" 으로 별도 기재 후 이후 절차에서 제외)
+2. 액터별 **사용자 플로우** 작성 (mermaid flowchart — 화면 전이 + 분기 조건)
+3. **화면 목록(IA)** 작성: 화면 ID · 이름 · 진입 조건 · 대응 FR · 담당 액터
+4. **와이어프레임** 작성 — 형식: ASCII 레이아웃 (또는 별도 `.html` 정적 파일)
+   - 반드시 "정적 프로토타입 — 프로덕션 코드 아님" 주석 포함
+   - 정상(happy path) + 빈 상태(empty) + 로딩 + 오류 상태 모두 포함
+5. **컴포넌트 명세** 작성 (화면 단위 → 컴포넌트 단위로 분해):
+   - Props / 내부 상태 / 이벤트(emit) / 서버 데이터 의존 여부
+   - 접근성 계약: role · aria-label · 키보드 내비게이션 · focus 순서
+6. **디자인 토큰** 정의 (프로파일의 UI 라이브러리 호환 형식):
+   색(primary·secondary·surface·error·…) · 타이포그래피(scale·weight) ·
+   간격(spacing scale) · 브레이크포인트(반응형 기준)
+   — 프로파일에 디자인 시스템(예: shadcn, MUI)이 명시됐으면 그 토큰 체계를 따른다
+7. **developer 인계 노트** 작성:
+   - 화면 구현 순서 권장 (의존관계 기준)
+   - API 연동 시 주의점 (architect 명세와 다른 부분, 로딩·오류 처리 패턴)
+   - 프로파일 UI 라이브러리에서 재사용할 컴포넌트 목록
+
+## 산출물 규격 — docs/20-design/ux/UX-<영역>.md
+
+컴포넌트 명세 1건 표준 예시 (이 밀도를 유지할 것):
+
+  ### C-07 신청 취소 다이얼로그
+  **대응 FR**: FR-07 (교육 신청 취소)  **대응 화면**: S-03 신청 내역
+  **Props**:
+  | 이름 | 타입 | 필수 | 설명 |
+  |------|------|------|------|
+  | enrollmentId | string | ✅ | 취소 대상 신청 ID |
+  | deadline | Date | ✅ | 취소 마감일 (서버 응답값) |
+  | onConfirm | () => void | ✅ | 취소 확인 콜백 |
+  **상태**: idle → pending → success | error
+  **접근성**: role="dialog" aria-modal="true" / 열릴 때 "취소 확인" 버튼에 focus /
+  ESC 키로 닫힘 / 배경 클릭 비활성화 (실수 방지)
+  **오류 상태**: 마감 지난 경우 버튼 disabled + "취소 기한이 지났습니다" 인라인 텍스트
+
+## 품질 기준
+- 화면 목록의 모든 화면 ↔ 최소 1개의 FR 추적 (FR 없는 화면 0)
+- 모든 상호작용에 빈/로딩/오류 상태 와이어프레임 존재
+- 디자인 토큰이 프로파일 §1 의 UI 라이브러리 체계와 호환
+- 화면마다 접근성 기준(role/aria) 최소 1줄 이상
+- developer 인계 노트에 구현 순서 명시
+
+## 안티패턴 (금지)
+- 이미지·비주얼 시안 생성 시도 ("화면 이미지를 첨부한다" 등)
+- 실제 프론트 프로덕션 코드 작성 (CSS class 선언·컴포넌트 .tsx 파일 — developer 영역)
+- 프로파일에 없는 UI 라이브러리 임의 도입 (제안은 NEXT 로)
+- FR 에 없는 화면 발명 (제안은 P- 절로 — planner 와 동일 원칙)
+- 행복 경로(happy path) 만 와이어프레임하고 빈/오류 상태 누락
+
+## 에스컬레이션
+- 프로파일에 UI 라이브러리/디자인 시스템이 없고 방향 선택이 필요한 경우 → NEEDS_DECISION
+- 기존 디자인 자산(브랜드 컬러·컴포넌트)과 FR 요구가 충돌 → NEEDS_DECISION
+- FR 의 액터·권한 체계가 화면 접근 제어 설계에 불충분 → NEEDS_DECISION
 
 (+ §5.1 공통 필수 입력 / 보고 규약 / 금지사항)
 ```
@@ -1022,7 +1144,7 @@ description: >
 
   Phase 0  착수      → [사람 게이트] 헌장 승인
   Phase 1  기획      → planner → [사람 게이트] 요구사항 베이스라인 확정
-  Phase 2  설계      → architect → reviewer 설계 리뷰 → [사람 게이트] 아키텍처 승인
+  Phase 2  설계      → architect (+ 프론트 시 designer 병행) → reviewer 설계 리뷰 → [사람 게이트] 아키텍처/UX 승인
   Phase 3  구현      → developer ↔ reviewer (이슈 단위 루프)
   Phase 4  테스트    → tester → 결함 루프 (developer 재작업)
   Phase 5  마감      → doc-writer → [사람 게이트] 릴리스 승인 → /retro
@@ -1092,7 +1214,7 @@ description: >
 | Status | 단일 선택 | `Backlog` `Todo` `In Progress` `Review` `Testing` `Blocked` `Done` |
 | Phase | 단일 선택 | `기획` `설계` `구현` `테스트` `문서` `운영` |
 | Priority | 단일 선택 | `P0` `P1` `P2` |
-| Agent | 단일 선택 | `planner` `architect` `developer` `tester` `reviewer` `doc-writer` |
+| Agent | 단일 선택 | `planner` `architect` `designer` `developer` `tester` `reviewer` `doc-writer` |
 | Rework | 숫자 | 재작업 횟수 (3 도달 시 ESCALATE) |
 
 상태 전이 허용 경로 (이외 전이는 금지):
@@ -1341,6 +1463,7 @@ glab issue close <번호>
 | `/verify #n` | 수동 게이트 | 특정 이슈에 reviewer+tester 를 즉시 투입해 검증만 수행 |
 | `/status` | 현황 보고 | §6-6 양식으로 보고 + 트래킹 이슈에 박제 |
 | `/retro` | 회고 | §11 절차 수행, learned 스킬 적재 |
+| `/guide [질문]` | 매뉴얼 조회·현황 문의 | 인자 있으면 GUIDE.md 에서 근거 절(§) 찾아 답변. 인자 없거나 상황 질문이면 보드+프로파일 읽어 현재 Phase·잔여 이슈·다음 권장 액션 요약 |
 
 예시 — `commands/run.md`:
 
@@ -1354,6 +1477,37 @@ pm-orchestration 스킬의 "이슈 단위 실행 루프"를 따른다.
 3. 보고 수신 → PM 검증 절차(4단계) → 상태 전이 → 다음 단계 에이전트 호출.
 4. NEEDS_DECISION / ESCALATE / 사람 게이트 도달 시 즉시 멈추고 사람에게 보고한다.
 5. 종료 시 /status 양식으로 결과를 요약한다.
+```
+
+예시 — `commands/guide.md`:
+
+```markdown
+---
+description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 상황을 조회한다
+---
+
+인자: $ARGUMENTS
+
+인자가 있으면 질문형, 없거나 "지금 어디야?" 류이면 상황 조회형으로 동작한다.
+
+## 질문형 (예: /guide "intake 회수 절차가 어떻게 돼?")
+1. docs/GUIDE.md 전문을 읽는다 (전체 설계서 — §0~§11)
+2. 질문과 관련된 절(§)을 찾아 핵심만 요약해 답한다
+3. 관련 커맨드나 에이전트가 있으면 함께 안내한다
+4. 근거 절 번호(§n.n)를 반드시 인용한다
+
+## 상황 조회형 (/guide 인자 없이, 또는 상황 질문)
+1. docs/00-charter/project-profile.md 를 읽는다
+2. 보드에서 현재 Status별 이슈 수를 조회한다
+3. 다음 항목을 요약한다:
+   - 현재 Phase 및 활성 마일스톤
+   - In Progress / Blocked 이슈 목록
+   - 다음 권장 액션과 사용할 커맨드
+
+## 답변 원칙
+- 답변은 5문장 이내로 간결하게
+- 규약 답변은 GUIDE.md 절 번호 인용 필수
+- 현황 답변은 보드 실제 데이터 기반 — 추측하지 않는다
 ```
 
 ---
@@ -1384,16 +1538,22 @@ pm-orchestration 스킬의 "이슈 단위 실행 루프"를 따른다.
    (차단급 아닌 잔여 질문은 "가정" 명기 후 진행, 가정 목록 헌장 등재)
 4. (선택) reviewer MODE=design 으로 요구사항 정합성·R-ID 전수 커버 검증
 5. **[사람 게이트]** 요구사항 베이스라인 확정
-6. PM: **마일스톤 분할안** 제시 (우선순위+의존+일정 제약, 2개 내외 안) →
-   **[사람 게이트]** 분할 승인 → 마일스톤 확정 + 백로그 이슈 일괄 생성
+6. PM: **마일스톤 분할안** 제시 (우선순위+의존+일정 제약, 사이징 3원칙, 2개 내외 안) →
+   **[사람 게이트]** 분할 승인 → 마일스톤 확정
+   → 보드에 **마일스톤·트래킹 이슈 골격 전체 + 첫 마일스톤 백로그 이슈만** 생성
+     (rolling-wave 미적용 소형 프로젝트는 전 마일스톤 백로그 일괄 생성 — §4.6.1a)
 7. 이후 변경은 변경 요청 이슈(§7.5.4)로만 — 인테이크 파일은 불변
 
 ### Phase 2 — 설계
-1. PM → architect 디스패치
-2. architect: 설계 산출물 + WBS 제안 → REPORT (기술 선택은 NEEDS_DECISION)
-3. PM → reviewer: 설계 리뷰 (요구사항 추적성 — 모든 FR 이 설계에 매핑되는가)
-4. **[사람 게이트]** 아키텍처/스택 승인
-5. PM: WBS → 구현 이슈 일괄 생성 (이슈당 AC 필수, 반나절~하루 크기)
+0. **(rolling-wave 적용 시, 매 마일스톤 진입 직전)** PM → planner 디스패치:
+   이번 마일스톤 FR 의 **상세 AC 적시 정제** (§4.6.1a 방식) + 해당 마일스톤 FR 이슈 생성.
+   새 사람 게이트 아님 — 베이스라인에서 이미 합의된 FR 의 상세화
+1. PM → architect 디스패치 **(프론트 있으면 designer 병행 디스패치 — UX 설계)**
+2. architect: 설계 산출물(API·ERD·ADR) + WBS 제안 → REPORT (기술 선택은 NEEDS_DECISION)
+   designer(조건부): 플로우·와이어프레임·컴포넌트 명세·디자인 토큰 + developer 인계 노트 → REPORT
+3. PM → reviewer: 설계 리뷰 (요구사항 추적성 — 모든 FR 이 설계에 매핑되는가 / **UX 화면↔FR 매핑 포함**)
+4. **[사람 게이트]** 아키텍처/스택/UX 승인
+5. PM: WBS → 구현 이슈 일괄 생성 (이슈당 AC 필수, 반나절~하루 크기 / **프론트 이슈는 UX 명세 절을 참조에 포함**)
 
 ### Phase 3~4 — 구현·테스트 (이슈 단위 파이프라인)
 - §6-2 사이클 반복. `/run 3` 처럼 소수 이슈를 묶어 진행
@@ -1543,7 +1703,7 @@ PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio �
 | 무한 재작업 루프 | Rework 카운터 + 3회 시 강제 ESCALATE |
 | 에이전트의 범위 일탈 ("하는 김에" 수정) | 정의서의 경계 조항 + reviewer 의 회귀 위험 점검 + git diff 가 이슈 범위와 일치하는지 PM 확인 |
 | 보드 조작 권한 누수 | hooks 로 도구 수준 차단(§10.2), push/merge 는 permissions deny |
-| 토큰 비용 | opus 는 판단 작업(planner/architect/reviewer)에만, 실행 작업은 sonnet. /run 의 동시 이슈 수 제한 |
+| 토큰 비용 | opus 는 판단 작업(planner/architect/designer/reviewer)에만, 실행 작업은 sonnet. /run 의 동시 이슈 수 제한 |
 | learned 스킬 오염 (잘못된 교훈 축적) | 사람 게이트 후 커밋. 분기마다 learned 정리(가지치기) |
 
 ---
@@ -1553,8 +1713,8 @@ PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio �
 | 주차 | 작업 | 완료 기준 |
 |------|------|----------|
 | 1 | 리포지토리 + 보드 + 이슈 템플릿 + 라벨 구성, 플랫폼 CLI 인증(gh/glab, 폐쇄망 포함) | PM 세션에서 보드 읽기/쓰기 왕복 성공 |
-| 1 | CLAUDE.md + agents 6종 + pm-orchestration / platform-ops 스킬 작성 | /agents 로 정의 인식 확인 |
-| 2 | commands 7종 + settings.json 권한 + hooks | /run 으로 더미 이슈 1건이 전체 사이클 통과 |
+| 1 | CLAUDE.md + agents 7종 + pm-orchestration / platform-ops 스킬 작성 | /agents 로 정의 인식 확인 |
+| 2 | commands 8종 + settings.json 권한 + hooks | /run 으로 더미 이슈 1건이 전체 사이클 통과 |
 | 2 | 파일럿: 소형 실제 과제 1건(이슈 5개 내외)으로 전 단계 수행 | Phase 0→5 완주, 회고 1회 |
 | 3 | 파일럿 회고 반영: 에이전트 정의 개선, learned 적재, 재작업 빈도 측정 | REWORK 율, 사람 개입 횟수 베이스라인 확보 |
 | 4+ | 확장 판단: 반복 구간 Dynamic Workflow 화 / 병렬 필요 시 Agent Teams 검토 | — |
@@ -1568,6 +1728,7 @@ PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio �
 | 프로젝트 헌장 | docs/00-charter | PM | 사람 | 사람 승인 |
 | 요구사항/스토리/AC | docs/10-requirements + 이슈 | planner | reviewer(선택)+사람 | 베이스라인 확정 |
 | 아키텍처/API/ERD | docs/20-design | architect | reviewer | 사람 승인 |
+| UX 설계(플로우·와이어프레임·컴포넌트 명세) | docs/20-design/ux | designer (프론트 시) | reviewer | 사람 승인 (아키텍처 게이트 포함) |
 | 코드 + 단위 테스트 | src/ | developer | reviewer | APPROVE |
 | 테스트 리포트 | docs/30-test | tester | PM(증거 확인) | PASS |
 | 릴리스 노트 | 마일스톤 코멘트 | doc-writer | PM | 사람 릴리스 승인 |
