@@ -38,12 +38,10 @@ jobs:
 
       - name: Extract changelog for this version
         if: steps.check_tag.outputs.exists == 'false'
-        id: changelog
         run: |
           V="${{ steps.version.outputs.version }}"
-          NOTE=$(grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //")
-          echo "note=${NOTE}" >> "$GITHUB_OUTPUT"
-          echo "Changelog: ${NOTE}"
+          grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //" > /tmp/release-notes.txt
+          echo "Changelog:"; cat /tmp/release-notes.txt
 
       - name: Create release and upload asset
         if: steps.check_tag.outputs.exists == 'false'
@@ -53,5 +51,5 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             CREWBOARD.md \
             --title "${{ steps.version.outputs.tag }}" \
-            --notes "${{ steps.changelog.outputs.note }}"
+            --notes-file /tmp/release-notes.txt
           echo "Released ${{ steps.version.outputs.tag }} with CREWBOARD.md asset."
