@@ -4,7 +4,8 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.6 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> 버전: v1.7 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> v1.7 변경: 버저닝·자기 업데이트 메커니즘 도입 — 버전 마커(.claude/CREWBOARD-VERSION), 업데이트 프로토콜(§0.8), /cb:version-update 커맨드(§8), GitHub Release 발행 체계
 > v1.6 변경: PR 중심 검증·머지 워크플로 정립 — developer PR 생성/PM Review 전이·approve/사람 머지 게이트, GitHub→Discord 머지 이벤트 수신(§7.4 신설), push/PR 권한 조정(§10.1)
 > v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /cb:guide 커맨드 신설(규약·현황 질의 — §8)
 > v1.4 변경: 요구사항 인테이크 메커니즘 신설(§4.6 — 템플릿 발급→사람 작성→회수→정제 루프), 킥오프/Phase 1 재편(planner 역할을 "도출"에서 "정제"로), 마일스톤 분할 절차 추가
@@ -22,7 +23,7 @@
 >
 > **권장 모델**: Claude Code 기본 모델(Opus급) 이상 — 부트스트랩과 이후 PM 세션
 > 공통. 이 문서는 창의성이 아니라 긴 문서에 대한 지시 충실도를 요구한다
-> (R3: 발명 금지, 28개 항목 전수 생성).
+> (R3: 발명 금지, 30개 항목 전수 생성).
 >
 > **Claude 에게**: 이 절은 너에게 내리는 직접 지시다. 아래 절차를 순서대로,
 > 단계를 건너뛰지 말고 수행하라. 이 절 이후의 본문(§1~)은 생성할 파일의
@@ -115,6 +116,8 @@ glab auth status                      # 미인증이면 중단: self-managed 는
 | 26 | `.claude/commands/cb/intake.md` | §8 표의 /cb:intake 행 + §4.6.3 절차를 본문으로 | |
 | 27 | `.claude/commands/cb/guide.md` | §8 의 guide.md 예시 코드블록 | 전문 그대로 |
 | 28 | `docs/GUIDE.md` | 이 문서 자체를 이동 | 루트에 두지 않고 docs/ 로 이동 보관 |
+| 29 | `.claude/commands/cb/version-update.md` | §8 의 version-update.md 예시 코드블록 | 전문 그대로 |
+| 30 | `.claude/CREWBOARD-VERSION` | §0.8 의 마커 양식 | 부트스트랩 버전·소스 URL 기록 |
 
 생성하지 않는 것: `project-profile.md` (이것은 /cb:kickoff 인터뷰의 산출물이다 — §4.5),
 `skills/stack-*` (킥오프의 §4.5.5 절차가 확정·생성한다).
@@ -162,7 +165,7 @@ glab label create --name "type:change-request" || true
 
 ### 0.6 Step 5 — 검증 체크리스트 (결과를 표로 보고)
 
-- a. 매니페스트 28개 항목 전부 존재 (`ls` 로 확인)
+- a. 매니페스트 30개 항목 전부 존재 (`ls` 로 확인)
 - b. 에이전트 7개 파일에 "공통 보고 규약" 문자열 포함 (R1 병합 확인: `grep -l`)
 - c. ⚠️ **hooks 스키마 검증**: §10.2 의 훅 입출력 형식을 현재 Claude Code 버전의
   공식 문서(code.claude.com/docs 의 hooks 페이지)와 대조한다. 대조 전까지
@@ -180,6 +183,77 @@ glab label create --name "type:change-request" || true
 구성 결과 요약 + 미검증/TODO 항목을 보고하고, 다음 명령을 안내한다:
 **"새 세션을 시작한 뒤 `/cb:kickoff <프로젝트 목표>` 를 실행하세요"**
 (새 세션이어야 CLAUDE.md 의 PM 정체성이 깨끗한 컨텍스트에서 적용된다)
+
+---
+
+### 0.8 업데이트 프로토콜 — 이미 부트스트랩된 프로젝트에서 CREWBOARD 버전 갱신
+
+> **사용법**: 프로젝트에서 `/cb:version-update` 를 실행하면 이 절의 절차를
+> Claude 가 수행한다. 인자 없으면 온라인(최신 릴리스), 경로 인자 있으면 오프라인(폐쇄망).
+>
+> **Claude 에게**: 이 절은 너에게 내리는 직접 지시다. §0.4 와 달리 **신규 생성이 아닌
+> 선택적 갱신**이다. 아래 분류표를 반드시 지키고, 사람 게이트 없이 진행하지 않는다.
+
+#### 0.8.1 파일 분류표 (갱신 범위 결정의 기준)
+
+| 분류 | 의미 | 대상 파일/경로 |
+|------|------|----------------|
+| **재생성** | 새 문서 기준 덮어쓰기. 적용 전 diff 표시 필수 | `CLAUDE.md`, `.claude/agents/`*(7개), `.claude/skills/pm-orchestration/SKILL.md`, `.claude/commands/cb/`*(모든 .md), `.claude/hooks/block-board-write.sh`, 플랫폼 템플릿(§7.5 경로), `CONTRIBUTING.md`, `docs/10-requirements/intake/_TEMPLATE.md`, `docs/GUIDE.md` |
+| **병합** | 신규 베이스라인 반영 + 프로젝트 고유 절 보존 | `.claude/skills/platform-ops/SKILL.md`(본문 재생성 + `## 이 프로젝트의 식별자` 절 보존), `.claude/settings.json`(§10.1 신규 권한·명령 추가 + 스택 명령·GH\_HOST·환경 변수 보존) |
+| **보존** | 절대 수정하지 않음 | `docs/00-charter/project-profile.md`, `.claude/skills/stack-*/`, `.claude/skills/learned/`, `.claude/skills/deliverable-standards/SKILL.md` 본문, `CODEOWNERS`, `docs/10-requirements/`, `docs/20-design/`, `docs/30-test/`, `docs/90-retro/`, `src/` |
+
+#### 0.8.2 버전 마커 양식 (`.claude/CREWBOARD-VERSION`)
+
+부트스트랩 Step 3(§0.4) 완료 시 아래 내용으로 생성한다. 수동 편집 금지.
+
+```
+# Crewboard 스캐폴딩 버전 — /cb:version-update 가 읽고 갱신한다. 수동 편집 금지.
+version: 1.7
+source: https://github.com/julio-kim/crewboard
+bootstrapped: <YYYY-MM-DD>
+```
+
+- `version`: 부트스트랩에 사용한 CREWBOARD.md 의 7번 줄 버전 숫자 (예: `1.7`)
+- `source`: 릴리스를 fetch 할 저장소 URL (`gh release` 와 raw URL 폴백 모두 이 값 사용)
+- `bootstrapped`: Step 3 수행 날짜 (갱신 시 이 날짜도 업데이트)
+
+#### 0.8.3 절차 (Claude 가 /cb:version-update 위임을 받아 수행)
+
+1. **현재 버전 확인**: `.claude/CREWBOARD-VERSION` 의 `version:` 읽기.
+   파일 없으면 (v1.7 이전 부트스트랩) 사람에게 현재 버전을 묻고 마커 생성 후 계속.
+
+2. **새 문서 확보**:
+   - 인자 있음(오프라인): 인자 경로의 파일을 새 문서로 사용.
+   - 인자 없음(온라인): `source` 저장소의 최신 릴리스에서 CREWBOARD.md 에셋 다운로드.
+     ```bash
+     gh release download --repo <source> --pattern "CREWBOARD.md" -O /tmp/CREWBOARD-new.md
+     ```
+     `gh` 미인증·불가 시 폴백: raw URL WebFetch
+     (`https://github.com/<owner>/<repo>/releases/latest/download/CREWBOARD.md`)
+
+3. **버전 비교**: 새 문서 7번 줄 `버전:` 파싱. 새 버전 ≤ 현재 버전이면
+   "현재 버전이 최신입니다" 보고 후 종료.
+
+4. **변경 요약 제시**: 새 문서 changelog (8번 줄~) 에서 현재 버전 초과분만 추려
+   사람에게 요약 제시. 예: 현재 1.6 → 신규 1.7 이면 `v1.7 변경:` 줄만 표시.
+
+5. **[사람 게이트] diff 검토 + 승인**: §0.8.1 분류표의 재생성·병합 대상 파일 각각에 대해
+   현재 파일과 새 버전 내용의 diff 를 보여주고, 사람이 "진행" 승인 시에만 적용한다.
+   (에이전트가 프로젝트 고유 수정을 덮어쓰지 않도록 하는 핵심 안전장치)
+
+6. **적용**:
+   - 재생성: 새 문서 해당 절의 코드블록 내용으로 덮어쓰기.
+   - 병합: 고유 절(`## 이 프로젝트의 식별자`, 스택 명령, GH\_HOST 등) 을 메모리에 보존 →
+     신규 베이스라인으로 파일 재생성 → 보존한 고유 절을 원래 위치에 재삽입.
+   - 보존: 해당 파일·경로에 일체 손대지 않음.
+   - `docs/GUIDE.md` 도 새 문서 전문으로 교체.
+
+7. **마커 갱신**: `.claude/CREWBOARD-VERSION` 의 `version` 과 `bootstrapped` 를 갱신.
+
+8. **오프라인 정리**: 인자로 받은 로컬 파일이 있으면 삭제 (프로젝트 루트 오염 방지).
+
+9. **결과 보고 + 커밋 제안**:
+   적용된 파일 목록을 보고하고 커밋을 제안한다. push 는 사람 (§10.1 deny 정책 일관).
 
 ---
 
@@ -288,6 +362,7 @@ project-root/
 ├── CLAUDE.md                          # PM 정체성 + 프로젝트 헌장 (§4)
 ├── .claude/
 │   ├── settings.json                  # 권한, hooks 등록 (§10)
+│   ├── CREWBOARD-VERSION              # 스캐폴딩 버전 마커 (§0.8.2)
 │   ├── agents/                        # 서브에이전트 정의 (§5)
 │   │   ├── planner.md
 │   │   ├── architect.md
@@ -314,7 +389,8 @@ project-root/
 │   │   ├── status.md                  # /cb:status — 현황 보고
 │   │   ├── retro.md                   # /cb:retro — 회고 + 스킬 적재
 │   │   ├── intake.md                  # /cb:intake — 요구사항 회수
-│   │   └── guide.md                   # /cb:guide — 매뉴얼 조회·현황 문의
+│   │   ├── guide.md                   # /cb:guide — 매뉴얼 조회·현황 문의
+│   │   └── version-update.md          # /cb:version-update — 스캐폴딩 버전 갱신
 │   └── hooks/                         # 가드레일 스크립트 (§10)
 │       └── block-board-write.sh
 ├── docs/
@@ -1602,6 +1678,7 @@ glab issue close <번호>
 | `/cb:status` | 현황 보고 | §6-6 양식으로 보고 + 트래킹 이슈에 박제 |
 | `/cb:retro` | 회고 | §11 절차 수행, learned 스킬 적재 |
 | `/cb:guide [질문]` | 매뉴얼 조회·현황 문의 | 인자 있으면 GUIDE.md 에서 근거 절(§) 찾아 답변. 인자 없거나 상황 질문이면 보드+프로파일 읽어 현재 Phase·잔여 이슈·다음 권장 액션 요약 |
+| `/cb:version-update [경로]` | 스캐폴딩 버전 갱신 | §0.8 절차. 인자 없으면 최신 릴리스(온라인) 자동 감지, 인자 있으면 로컬 CREWBOARD.md(폐쇄망). 1회 사람 승인 게이트 후 소유 파일만 갱신, 프로젝트 고유 파일 보존, 입력 파일 자동 삭제(오프라인) |
 
 예시 — `commands/cb/run.md`:
 
@@ -1646,6 +1723,32 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 - 답변은 5문장 이내로 간결하게
 - 규약 답변은 GUIDE.md 절 번호 인용 필수
 - 현황 답변은 보드 실제 데이터 기반 — 추측하지 않는다
+```
+
+예시 — `commands/cb/version-update.md`:
+
+```markdown
+---
+description: Crewboard 스캐폴딩을 최신 릴리스(또는 로컬 문서)로 갱신한다
+---
+
+인자: $ARGUMENTS  (선택: 로컬 CREWBOARD.md 경로 — 폐쇄망 수동 다운로드 파일)
+
+docs/GUIDE.md 의 §0.8 업데이트 프로토콜을 따른다.
+
+1. `.claude/CREWBOARD-VERSION` 의 `version:` 확인
+   (파일 없으면 사람에게 현재 버전을 묻고 마커 생성 후 계속)
+2. 새 문서 확보
+   - 인자 있음(오프라인): 인자 경로의 파일 사용
+   - 인자 없음(온라인): source 저장소 최신 릴리스 에셋 다운로드
+     `gh release download --repo <source> --pattern "CREWBOARD.md" -O /tmp/CREWBOARD-new.md`
+     (gh 불가 시 raw URL WebFetch 폴백)
+3. 버전 비교 — 새 버전 ≤ 현재이면 "현재 버전이 최신입니다" 보고 후 종료
+4. changelog 에서 현재 버전 초과 변경분만 추려 요약 제시
+5. [사람 게이트] §0.8.1 분류표 기준 재생성·병합 대상의 diff 표시 → 승인
+6. 적용 (재생성/병합/보존 — §0.8.1 준수) → `CREWBOARD-VERSION` 갱신
+7. 오프라인 모드면 인자로 받은 입력 파일 삭제
+8. 적용 파일 목록 보고 + 커밋 제안 (push 는 사람)
 ```
 
 ---

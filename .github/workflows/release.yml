@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "CREWBOARD.md"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse version from CREWBOARD.md
+        id: version
+        run: |
+          V=$(grep -m1 '버전:' CREWBOARD.md | sed -E 's/.*v([0-9]+\.[0-9]+).*/\1/')
+          echo "version=${V}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${V}" >> "$GITHUB_OUTPUT"
+          echo "Parsed version: ${V}"
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git ls-remote --tags origin "refs/tags/${{ steps.version.outputs.tag }}" | grep -q .; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag ${{ steps.version.outputs.tag }} already exists — skipping release."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract changelog for this version
+        if: steps.check_tag.outputs.exists == 'false'
+        id: changelog
+        run: |
+          V="${{ steps.version.outputs.version }}"
+          NOTE=$(grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //")
+          echo "note=${NOTE}" >> "$GITHUB_OUTPUT"
+          echo "Changelog: ${NOTE}"
+
+      - name: Create release and upload asset
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            CREWBOARD.md \
+            --title "${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.changelog.outputs.note }}"
+          echo "Released ${{ steps.version.outputs.tag }} with CREWBOARD.md asset."

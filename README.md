@@ -2,7 +2,7 @@
 
 <p align="left">
   <img src="https://img.shields.io/badge/Claude%20Code-Subagents%20%2B%20Skills-d97757?logo=anthropic&logoColor=white" alt="Claude Code" />
-  <img src="https://img.shields.io/badge/version-1.5-blue" alt="Version" />
+  <img src="https://img.shields.io/github/v/release/julio-kim/crewboard?label=version&color=blue" alt="Version" />
   <img src="https://img.shields.io/badge/platform-GitHub%20%7C%20GitLab-181717?logo=github&logoColor=white" alt="Platform" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs Welcome" />
@@ -29,6 +29,22 @@ CREWBOARD.md 복사  →  claude 실행 (Opus급 모델)  →  "부트스트랩 
 이후에는 PM 에이전트가 이슈 보드를 기준점 삼아 기획 → 설계 → 구현 → 테스트를
 오케스트레이션하고, 사람은 요구사항 작성과 6개의 승인 게이트에서만 개입합니다.
 단계별 절차는 [시작하기](#-시작하기)를 참고하세요.
+
+## 🔄 버전 업데이트
+
+이미 부트스트랩한 프로젝트에서 CREWBOARD 최신 버전으로 스캐폴딩을 갱신합니다.
+
+```text
+# 온라인 (GitHub에 접근 가능한 환경)
+> /cb:version-update
+
+# 폐쇄망 (GitHub Releases에서 CREWBOARD.md를 수동 다운로드한 경우)
+> /cb:version-update CREWBOARD.md    ← 적용 후 파일 자동 삭제
+```
+
+- **소유 파일만 갱신** — agents, commands, hooks 등 CREWBOARD 정의 파일 재생성
+- **프로젝트 고유 설정 보존** — project-profile, stack-*, learned, settings의 스택 명령 유지
+- **1회 승인 게이트** — diff 표시 후 사람 확인 없이 적용하지 않음
 
 ## 🏗️ 아키텍처
 
@@ -88,7 +104,7 @@ Crewboard의 모든 구성은 다섯 가지 원칙 위에 서 있습니다.
 | **에이전트 7종** | planner / architect / **designer**(프론트 조건부) / developer / tester / reviewer / doc-writer — 절차·산출물 예시·안티패턴·에스컬레이션 조건을 갖춘 7요소 표준 정의 |
 | **프로젝트 프로파일** | 스택·규약·환경 제약은 에이전트 정의가 아닌 프로파일에 — 같은 `.claude/` 세트를 어떤 스택의 프로젝트에도 재사용. 킥오프 때 프로파일에 맞는 스택 스킬을 확정·자동 생성 |
 | **요구사항 인테이크** | 템플릿 발급 → 사람 작성 → RFI 질문 루프 → 베이스라인 → 마일스톤 분할(사이징 3원칙). 상세 AC와 이슈는 활성 마일스톤 단위 점진 생성(rolling-wave). R-ID 부터 코드까지 끊기지 않는 추적성 |
-| **슬래시 커맨드 8종** | `/kickoff` `/intake` `/plan-sprint` `/run` `/verify` `/status` `/retro` `/guide` |
+| **슬래시 커맨드 9종** | `/kickoff` `/intake` `/plan-sprint` `/run` `/verify` `/status` `/retro` `/guide` `/version-update` |
 | **검증 게이트** | reviewer의 근거 인용 판정 + tester의 독립 시나리오 + PM의 기계적 대조. 재작업 3회 시 자동 에스컬레이션 |
 | **가드레일** | push/merge 권한 차단, 보드 조작 훅 통제, CODEOWNERS로 `.claude/` 변경은 사람 리뷰 강제 |
 | **자기개선 루프** | `/retro` 가 검증된 해법을 `skills/learned/` 에 적재 — [agentskills.io](https://agentskills.io) 호환 |
@@ -118,7 +134,7 @@ claude
 > 이 문서의 부트스트랩 프로토콜대로 프로젝트를 구성해
 ```
 
-Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 28개 항목 생성 →
+Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 30개 항목 생성 →
 보드/라벨 구성 → 검증 체크리스트 보고까지 자동으로 수행합니다.
 구성이 끝나면 새 세션에서 프로젝트를 시작합니다:
 
@@ -134,7 +150,7 @@ Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 28개
 ─── 세트업 (프로젝트당 1회) ──────────────────────────────────────────
 👤  새 프로젝트 폴더에 CREWBOARD.md 복사 후 claude 실행
 👤  "> 이 문서의 부트스트랩 프로토콜대로 구성해"
-🤖  환경 점검 → 플랫폼·리포 질문 → 28개 파일 생성 → 보드·라벨 구성
+🤖  환경 점검 → 플랫폼·리포 질문 → 30개 파일 생성 → 보드·라벨 구성
 
 ─── Phase 0  착수 ────────────────────────────────────────────────────
 👤  > /kickoff 사내 교육 신청 관리 시스템 — 신청/승인/이수 관리
@@ -203,6 +219,7 @@ project-root/
 ## 🗺️ 로드맵
 
 - [x] v1.x — 서브에이전트 기반 단일 세션 오케스트레이션
+- [x] 버저닝 + `/cb:version-update` — GitHub Release 기반 자기 업데이트 (온라인·폐쇄망 양 모드)
 - [ ] 정형화된 반복 구간의 [Dynamic Workflows](https://code.claude.com/docs/en/workflows) 전환 (릴리스 QA 사이클 등)
 - [ ] 병렬 병목 구간의 [Agent Teams](https://code.claude.com/docs/en/agent-teams) 적용 검토
 - [ ] 조직 공유 스택 스킬 팩 라이브러리 — 킥오프의 스킬 생성 단계가 참조할 재사용 풀
