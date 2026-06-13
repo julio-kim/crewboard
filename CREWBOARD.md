@@ -5,7 +5,7 @@
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
 > 버전: v1.5 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
-> v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /guide 커맨드 신설(규약·현황 질의 — §8)
+> v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /cb:guide 커맨드 신설(규약·현황 질의 — §8)
 > v1.4 변경: 요구사항 인테이크 메커니즘 신설(§4.6 — 템플릿 발급→사람 작성→회수→정제 루프), 킥오프/Phase 1 재편(planner 역할을 "도출"에서 "정제"로), 마일스톤 분할 절차 추가
 > v1.3 변경: 리포지토리 메타 문서 세트 신설(§7.5 — PR/MR·결함·변경요청 템플릿, CONTRIBUTING, CODEOWNERS), GitHub/GitLab 플랫폼 선택 지원
 > v1.2 변경: §0 부트스트랩 프로토콜 추가 — 이 문서 자체를 프로젝트 자동 구성 가이드로 사용 가능
@@ -98,12 +98,12 @@ glab auth status                      # 미인증이면 중단: self-managed 는
 | 10 | `.claude/skills/platform-ops/SKILL.md` | §7 (GitHub: 7.1~7.3 / GitLab: 7.6) | Step 2 답변의 플랫폼에 맞는 절만 본문으로, host/owner 반영 |
 | 11 | `.claude/skills/deliverable-standards/SKILL.md` | 골격만 생성 | 본문: "조직 산출물 표준을 여기에 채울 것" + frontmatter |
 | 12 | `.claude/skills/learned/.gitkeep` | — | 빈 디렉터리 유지용 |
-| 13 | `.claude/commands/kickoff.md` | §8 표의 /kickoff 행 + §9 Phase 0 절차를 본문으로 | |
-| 14 | `.claude/commands/plan-sprint.md` | §8 표의 /plan-sprint 행의 흐름을 번호 절차로 전개 | 보드 반영은 platform-ops 스킬(§7) 사용 명시 |
-| 15 | `.claude/commands/run.md` | §8 의 run.md 예시 코드블록 | 전문 그대로 |
-| 16 | `.claude/commands/verify.md` | §8 표 + §6-4 검증 절차를 본문으로 | |
-| 17 | `.claude/commands/status.md` | §6-6 보고 양식을 본문으로 | |
-| 18 | `.claude/commands/retro.md` | §11 절차를 본문으로 | |
+| 13 | `.claude/commands/cb/kickoff.md` | §8 표의 /cb:kickoff 행 + §9 Phase 0 절차를 본문으로 | |
+| 14 | `.claude/commands/cb/plan-sprint.md` | §8 표의 /cb:plan-sprint 행의 흐름을 번호 절차로 전개 | 보드 반영은 platform-ops 스킬(§7) 사용 명시 |
+| 15 | `.claude/commands/cb/run.md` | §8 의 run.md 예시 코드블록 | 전문 그대로 |
+| 16 | `.claude/commands/cb/verify.md` | §8 표 + §6-4 검증 절차를 본문으로 | |
+| 17 | `.claude/commands/cb/status.md` | §6-6 보고 양식을 본문으로 | |
+| 18 | `.claude/commands/cb/retro.md` | §11 절차를 본문으로 | |
 | 19 | `.claude/settings.json` | §10.1 | Step 2 답변으로 GH_HOST 반영, GHE 아니면 env 키 제거 |
 | 20 | `.claude/hooks/block-board-write.sh` | §10.2 | `chmod +x` 필수. ⚠️ 0.6-c 참고 |
 | 21 | 플랫폼 템플릿 세트 (이슈 4종 + PR/MR, 5개 파일) | §7.5.1~7.5.5, §7.2 | Step 2 의 플랫폼 답변에 따라 §7.5.1 경로 매핑표의 경로로 생성 |
@@ -111,11 +111,11 @@ glab auth status                      # 미인증이면 중단: self-managed 는
 | 23 | `CODEOWNERS` (GitHub) / `.gitlab/CODEOWNERS` | §7.5.7 | Step 2 답변으로 사람 계정 반영 |
 | 24 | `docs/00-charter/.gitkeep` ~ `docs/90-retro/.gitkeep` | §3 의 docs 구조 | 5개 디렉터리 |
 | 25 | `docs/10-requirements/intake/_TEMPLATE.md` | §4.6.2 | 전문 그대로 (킥오프 때 PM 이 복사·발급) |
-| 26 | `.claude/commands/intake.md` | §8 표의 /intake 행 + §4.6.3 절차를 본문으로 | |
-| 27 | `.claude/commands/guide.md` | §8 의 guide.md 예시 코드블록 | 전문 그대로 |
+| 26 | `.claude/commands/cb/intake.md` | §8 표의 /cb:intake 행 + §4.6.3 절차를 본문으로 | |
+| 27 | `.claude/commands/cb/guide.md` | §8 의 guide.md 예시 코드블록 | 전문 그대로 |
 | 28 | `docs/GUIDE.md` | 이 문서 자체를 이동 | 루트에 두지 않고 docs/ 로 이동 보관 |
 
-생성하지 않는 것: `project-profile.md` (이것은 /kickoff 인터뷰의 산출물이다 — §4.5),
+생성하지 않는 것: `project-profile.md` (이것은 /cb:kickoff 인터뷰의 산출물이다 — §4.5),
 `skills/stack-*` (킥오프의 §4.5.5 절차가 확정·생성한다).
 
 ### 0.5 Step 4 — 플랫폼 측 구성
@@ -177,7 +177,7 @@ glab label create --name "type:change-request" || true
 ### 0.7 Step 6 — 종료 보고와 다음 단계 안내
 
 구성 결과 요약 + 미검증/TODO 항목을 보고하고, 다음 명령을 안내한다:
-**"새 세션을 시작한 뒤 `/kickoff <프로젝트 목표>` 를 실행하세요"**
+**"새 세션을 시작한 뒤 `/cb:kickoff <프로젝트 목표>` 를 실행하세요"**
 (새 세션이어야 CLAUDE.md 의 PM 정체성이 깨끗한 컨텍스트에서 적용된다)
 
 ---
@@ -305,13 +305,15 @@ project-root/
 │   │   ├── stack-*/                   # 스택 스킬 팩 (킥오프 §4.5.5 가 확정·생성)
 │   │   └── learned/                   # 자가생성 스킬 적재소 (§11)
 │   │       └── (회고에서 자동 생성)
-│   ├── commands/                      # 슬래시 커맨드 (§8)
-│   │   ├── kickoff.md                 # /kickoff  — 프로젝트 착수
-│   │   ├── plan-sprint.md             # /plan-sprint — 스프린트 계획
-│   │   ├── run.md                     # /run — 보드 기반 자율 실행 루프
-│   │   ├── verify.md                  # /verify — 특정 이슈 검증 게이트
-│   │   ├── status.md                  # /status — 현황 보고
-│   │   └── retro.md                   # /retro — 회고 + 스킬 적재
+│   ├── commands/cb/                   # 슬래시 커맨드 (§8) — /cb: 네임스페이스
+│   │   ├── kickoff.md                 # /cb:kickoff  — 프로젝트 착수
+│   │   ├── plan-sprint.md             # /cb:plan-sprint — 스프린트 계획
+│   │   ├── run.md                     # /cb:run — 보드 기반 자율 실행 루프
+│   │   ├── verify.md                  # /cb:verify — 특정 이슈 검증 게이트
+│   │   ├── status.md                  # /cb:status — 현황 보고
+│   │   ├── retro.md                   # /cb:retro — 회고 + 스킬 적재
+│   │   ├── intake.md                  # /cb:intake — 요구사항 회수
+│   │   └── guide.md                   # /cb:guide — 매뉴얼 조회·현황 문의
 │   └── hooks/                         # 가드레일 스크립트 (§10)
 │       └── block-board-write.sh
 ├── docs/
@@ -350,8 +352,8 @@ project-root/
 6. 보고는 결론 우선. 현황 보고 양식은 pm-orchestration 스킬을 따른다.
 
 ## 세션 시작 시
-1. docs/00-charter/project-profile.md 를 읽는다. 없으면 /kickoff 미수행 상태이므로
-   어떤 작업도 시작하지 말고 /kickoff 부터 제안한다.
+1. docs/00-charter/project-profile.md 를 읽는다. 없으면 /cb:kickoff 미수행 상태이므로
+   어떤 작업도 시작하지 말고 /cb:kickoff 부터 제안한다.
 2. `gh` 로 보드 현황을 읽고 In Progress / Review 이슈를 파악한다.
 3. 진행 중이던 작업이 있으면 해당 이슈의 최근 코멘트를 읽고 재개한다.
 4. 현황 요약을 한 뒤 다음 액션을 제안한다.
@@ -364,7 +366,7 @@ project-root/
 
 ## 컨텍스트 관리
 - 서브에이전트의 상세 출력을 컨텍스트에 들이지 않는다. 경로와 결론만.
-- 자신의 컨텍스트가 길어지면 /status 로 현황을 이슈에 박제한 뒤
+- 자신의 컨텍스트가 길어지면 /cb:status 로 현황을 이슈에 박제한 뒤
   사람에게 세션 재시작을 제안한다. (보드가 기준점이므로 재개 비용은 낮다)
 ```
 
@@ -390,9 +392,9 @@ project-root/
 모든 에이전트는 **작업 시작 전에 프로파일을 필독**하도록 공통 규약에 강제되며(§5.1),
 정의 파일에는 "스택과 규약은 프로파일을 따른다"고만 쓴다.
 
-### 4.5.2 프로파일 작성 시점 — /kickoff 인터뷰
+### 4.5.2 프로파일 작성 시점 — /cb:kickoff 인터뷰
 
-`/kickoff` 의 첫 단계는 헌장 작성이 아니라 **PM 이 사람에게 묻는 구조화 인터뷰**다.
+`/cb:kickoff` 의 첫 단계는 헌장 작성이 아니라 **PM 이 사람에게 묻는 구조화 인터뷰**다.
 PM 은 아래 항목을 질문하고(이미 답이 나온 항목은 건너뜀), 답변으로 프로파일을
 작성한 뒤 **[사람 게이트]** 승인을 받아 커밋한다. 이 시점부터 프로파일은
 모든 에이전트의 공통 전제가 된다.
@@ -534,8 +536,8 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
 
 **발급 위치와 회수 흐름**: 발급은 **프로젝트 루트**에 `INTAKE-<영역>.md` 로
 한다 (사람이 바로 찾아 작성할 수 있도록). 발급 시 PM 은 반드시
-**"작성을 마치면 `/intake` 를 실행하세요"** 라고 안내하고 정지한다.
-`/intake` 회수 시 PM 이 파일을 `docs/10-requirements/intake/` 로 **이동·박제**하며,
+**"작성을 마치면 `/cb:intake` 를 실행하세요"** 라고 안내하고 정지한다.
+`/cb:intake` 회수 시 PM 이 파일을 `docs/10-requirements/intake/` 로 **이동·박제**하며,
 이후 이 사본이 불변 원천이 된다 (루트에는 남기지 않는다).
 영역이 많은 프로젝트는 파일을 영역별로 분할한다 (여러 개, 회수 시점이 달라도 됨).
 
@@ -550,7 +552,7 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
 >   (`?` = 함께 정해야 할 항목, 빈칸 = 해당 없음).
 > - 완벽한 문장이 아니어도 됩니다. 키워드·예시·기존 화면 캡처 경로도 좋습니다.
 > - 우선순위: M(필수) / S(중요) / C(있으면 좋음) / ?(미정)
-> - **작성을 마치면 Claude Code 에서 `/intake` 를 실행하세요** — 이 파일을
+> - **작성을 마치면 Claude Code 에서 `/cb:intake` 를 실행하세요** — 이 파일을
 >   회수해 분석을 시작합니다.
 
 ## A. 배경과 목표
@@ -592,7 +594,7 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
 
 ### 4.6.3 회수 후 처리 절차 (PM 주관)
 
-1. **회수·박제**: `/intake [파일]` — 인자가 없으면 프로젝트 루트의
+1. **회수·박제**: `/cb:intake [파일]` — 인자가 없으면 프로젝트 루트의
    `INTAKE-*.md` 를 자동 탐지한다 (여러 개면 목록을 보여주고 선택받음).
    파일을 `docs/10-requirements/intake/` 로 이동·박제하고 이후 이 사본을
    원천으로 삼는다 (§4.6.1)
@@ -1147,7 +1149,7 @@ description: >
   Phase 2  설계      → architect (+ 프론트 시 designer 병행) → reviewer 설계 리뷰 → [사람 게이트] 아키텍처/UX 승인
   Phase 3  구현      → developer ↔ reviewer (이슈 단위 루프)
   Phase 4  테스트    → tester → 결함 루프 (developer 재작업)
-  Phase 5  마감      → doc-writer → [사람 게이트] 릴리스 승인 → /retro
+  Phase 5  마감      → doc-writer → [사람 게이트] 릴리스 승인 → /cb:retro
 
   ※ Phase 3~4 는 이슈 단위로 파이프라인 병행 가능. 단 Phase 2 게이트 통과 전
     구현 이슈를 In Progress 로 올리지 않는다.
@@ -1191,7 +1193,7 @@ description: >
   - 일정 리스크: 마일스톤 잔여 이슈 대비 진행률 경고
   - 재작업 한도 도달
 
-## 6. 현황 보고 양식 (/status)
+## 6. 현황 보고 양식 (/cb:status)
 
   ## 프로젝트 현황 — <날짜>
   - 마일스톤: <명> (<완료>/<전체> 이슈)
@@ -1456,16 +1458,16 @@ glab issue close <번호>
 
 | 커맨드 | 역할 | 흐름 |
 |--------|------|------|
-| `/kickoff <목표>` | 착수 | ① 프로파일 인터뷰(§4.5.2 — 스킬 후보 질문 병합) → 승인 ② 스택 스킬 생성 + settings 스택 명령 교체(§4.5.5) ③ 헌장 초안 → 승인 ④ 인테이크 모드 판정 후 템플릿 발급(§4.6) → 사람 작성 대기. 회수 후 `/intake` 로 재개 |
-| `/intake [파일]` | 요구사항 회수 | §4.6.3 처리: 회수·박제(인자 없으면 루트 `INTAKE-*.md` 자동 탐지) → 형식 점검 → planner 정제 → RFI 루프 → 베이스라인 게이트 → 마일스톤 분할안 → 백로그 생성 |
-| `/plan-sprint <MS>` | 스프린트 계획 | 마일스톤 잔여 이슈를 우선순위/의존성으로 정렬, 이번 스프린트 Todo 승격안 제시 → 사람 확인 후 보드 반영 |
-| `/run [N]` | 자율 실행 루프 | 보드에서 Todo 상위 N개(기본 1)를 §6-2 사이클로 실행. 게이트/ESCALATE 에서만 정지 |
-| `/verify #n` | 수동 게이트 | 특정 이슈에 reviewer+tester 를 즉시 투입해 검증만 수행 |
-| `/status` | 현황 보고 | §6-6 양식으로 보고 + 트래킹 이슈에 박제 |
-| `/retro` | 회고 | §11 절차 수행, learned 스킬 적재 |
-| `/guide [질문]` | 매뉴얼 조회·현황 문의 | 인자 있으면 GUIDE.md 에서 근거 절(§) 찾아 답변. 인자 없거나 상황 질문이면 보드+프로파일 읽어 현재 Phase·잔여 이슈·다음 권장 액션 요약 |
+| `/cb:kickoff <목표>` | 착수 | ① 프로파일 인터뷰(§4.5.2 — 스킬 후보 질문 병합) → 승인 ② 스택 스킬 생성 + settings 스택 명령 교체(§4.5.5) ③ 헌장 초안 → 승인 ④ 인테이크 모드 판정 후 템플릿 발급(§4.6) → 사람 작성 대기. 회수 후 `/cb:intake` 로 재개 |
+| `/cb:intake [파일]` | 요구사항 회수 | §4.6.3 처리: 회수·박제(인자 없으면 루트 `INTAKE-*.md` 자동 탐지) → 형식 점검 → planner 정제 → RFI 루프 → 베이스라인 게이트 → 마일스톤 분할안 → 백로그 생성 |
+| `/cb:plan-sprint <MS>` | 스프린트 계획 | 마일스톤 잔여 이슈를 우선순위/의존성으로 정렬, 이번 스프린트 Todo 승격안 제시 → 사람 확인 후 보드 반영 |
+| `/cb:run [N]` | 자율 실행 루프 | 보드에서 Todo 상위 N개(기본 1)를 §6-2 사이클로 실행. 게이트/ESCALATE 에서만 정지 |
+| `/cb:verify #n` | 수동 게이트 | 특정 이슈에 reviewer+tester 를 즉시 투입해 검증만 수행 |
+| `/cb:status` | 현황 보고 | §6-6 양식으로 보고 + 트래킹 이슈에 박제 |
+| `/cb:retro` | 회고 | §11 절차 수행, learned 스킬 적재 |
+| `/cb:guide [질문]` | 매뉴얼 조회·현황 문의 | 인자 있으면 GUIDE.md 에서 근거 절(§) 찾아 답변. 인자 없거나 상황 질문이면 보드+프로파일 읽어 현재 Phase·잔여 이슈·다음 권장 액션 요약 |
 
-예시 — `commands/run.md`:
+예시 — `commands/cb/run.md`:
 
 ```markdown
 ---
@@ -1476,10 +1478,10 @@ pm-orchestration 스킬의 "이슈 단위 실행 루프"를 따른다.
 2. 각 이슈에 대해 디스패치 표준에 따라 담당 에이전트를 호출한다.
 3. 보고 수신 → PM 검증 절차(4단계) → 상태 전이 → 다음 단계 에이전트 호출.
 4. NEEDS_DECISION / ESCALATE / 사람 게이트 도달 시 즉시 멈추고 사람에게 보고한다.
-5. 종료 시 /status 양식으로 결과를 요약한다.
+5. 종료 시 /cb:status 양식으로 결과를 요약한다.
 ```
 
-예시 — `commands/guide.md`:
+예시 — `commands/cb/guide.md`:
 
 ```markdown
 ---
@@ -1490,13 +1492,13 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 
 인자가 있으면 질문형, 없거나 "지금 어디야?" 류이면 상황 조회형으로 동작한다.
 
-## 질문형 (예: /guide "intake 회수 절차가 어떻게 돼?")
+## 질문형 (예: /cb:guide "intake 회수 절차가 어떻게 돼?")
 1. docs/GUIDE.md 전문을 읽는다 (전체 설계서 — §0~§11)
 2. 질문과 관련된 절(§)을 찾아 핵심만 요약해 답한다
 3. 관련 커맨드나 에이전트가 있으면 함께 안내한다
 4. 근거 절 번호(§n.n)를 반드시 인용한다
 
-## 상황 조회형 (/guide 인자 없이, 또는 상황 질문)
+## 상황 조회형 (/cb:guide 인자 없이, 또는 상황 질문)
 1. docs/00-charter/project-profile.md 를 읽는다
 2. 보드에서 현재 Status별 이슈 수를 조회한다
 3. 다음 항목을 요약한다:
@@ -1514,7 +1516,7 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 
 ## 9. 단계별 상세 워크플로
 
-### Phase 0 — 착수 (`/kickoff`)
+### Phase 0 — 착수 (`/cb:kickoff`)
 1. 사람이 목표를 한 단락으로 제시
 2. PM: **프로파일 인터뷰** (§4.5.2 — 일하는 방식에 대한 8개 항목. 대화형 유지.
    스택 스킬 후보 도출·부족분 질문을 병합 — §4.5.5 의 1~3단계)
@@ -1525,13 +1527,13 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 6. **[사람 게이트]** 헌장 승인
 7. PM: **인테이크 모드 판정** (§4.6.1 — 소형이면 대화형, 기본은 템플릿형)
    - 템플릿형: `_TEMPLATE.md` 를 복사해 **프로젝트 루트**에 `INTAKE-<영역>.md`
-     발급(영역별 분할 가능) → **"작성을 마치면 `/intake` 를 실행하세요"** 안내
+     발급(영역별 분할 가능) → **"작성을 마치면 `/cb:intake` 를 실행하세요"** 안내
      → **여기서 킥오프는 일시 정지** (사람 작성 대기)
    - 대화형: PM 이 템플릿 항목을 대화로 질의해 인테이크 파일을 대신 작성 → 확인
 8. PM: 마일스톤·트래킹 이슈 골격 생성 (백로그는 Phase 1 완료 후)
 
 ### Phase 1 — 요구사항 정제 (인테이크 회수 후 — §4.6.3)
-1. 사람이 `/intake` 실행 → PM 이 루트의 `INTAKE-*.md` 를 회수해
+1. 사람이 `/cb:intake` 실행 → PM 이 루트의 `INTAKE-*.md` 를 회수해
    `docs/10-requirements/intake/` 로 박제 → 형식 점검 (R-ID, `?` 집계)
 2. PM → planner 디스패치: **정제** (구조화 + AC 작성, 발명 금지)
 3. planner 의 질문 → PM 이 RFI 문서로 정리 → 사람 답변 → 반영 루프
@@ -1556,7 +1558,7 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 5. PM: WBS → 구현 이슈 일괄 생성 (이슈당 AC 필수, 반나절~하루 크기 / **프론트 이슈는 UX 명세 절을 참조에 포함**)
 
 ### Phase 3~4 — 구현·테스트 (이슈 단위 파이프라인)
-- §6-2 사이클 반복. `/run 3` 처럼 소수 이슈를 묶어 진행
+- §6-2 사이클 반복. `/cb:run 3` 처럼 소수 이슈를 묶어 진행
 - 의존성 있는 이슈는 PM 이 순서 강제 (보드의 관련 이슈 링크 기준)
 - 결함은 결함 이슈로 분리할지 코멘트 루프로 처리할지 PM 판단
   (기준: 다른 이슈에 영향이 번지면 분리)
@@ -1565,7 +1567,7 @@ description: Crewboard 규약·커맨드를 질문하거나 현재 프로젝트 
 1. tester: 마일스톤 회귀 테스트 (전체 시나리오)
 2. doc-writer: 릴리스 노트/가이드
 3. **[사람 게이트]** 릴리스 승인 (머지/배포는 사람 또는 사람 입회 하에)
-4. `/retro`
+4. `/cb:retro`
 
 ---
 
@@ -1634,7 +1636,7 @@ exit 0
 
 ---
 
-## 11. 자기개선 루프 — 회고와 스킬 적재 (`/retro`)
+## 11. 자기개선 루프 — 회고와 스킬 적재 (`/cb:retro`)
 
 Hermes Agent 에서 차용하는 유일한 핵심 패턴: **해결한 문제를 스킬로 박제**.
 
@@ -1671,7 +1673,7 @@ description: >
 ## 12. 운영 시나리오 예시 (요약 시퀀스)
 
 ```
-Julio : /kickoff "사내 교육 신청 관리 시스템 — 신청/승인/이수 관리"
+Julio : /cb:kickoff "사내 교육 신청 관리 시스템 — 신청/승인/이수 관리"
 PM    : 헌장 초안 작성 → 승인 요청
 Julio : 승인. 단, 결재 연동은 2차 범위로
 PM    : 헌장 수정·커밋, MS1 생성, planner 디스패치
@@ -1680,15 +1682,15 @@ PM    : 형식 검증 → "베이스라인 확정해도 될까요? 미결 질문
 Julio : (답변) 확정
 PM    : architect 디스패치 → 설계 + WBS 9건 → reviewer 설계 리뷰 APPROVE
         → "스택 후보 비교입니다. 권고는 A안" → Julio 승인
-PM    : 구현 이슈 9건 생성, /run 2 시작
+PM    : 구현 이슈 9건 생성, /cb:run 2 시작
 dev   : #14 구현 → REPORT / PM 검증 → Review
 rev   : #14 REWORK (AC3 미충족: 예외 처리 누락, 근거 첨부)
 PM    : Rework=1 기록, 사유 첨부 재디스패치
 dev   : 수정 → rev APPROVE → tester PASS → PM 최종 대조 → Done, close
 ...
-PM    : /status — MS1 7/9 완료, #18 Blocked(GHE 프록시 이슈, 결정 필요)
+PM    : /cb:status — MS1 7/9 완료, #18 Blocked(GHE 프록시 이슈, 결정 필요)
 Julio : (결정)
-PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio 승인·커밋
+PM    : MS1 마감 → /cb:retro → learned 스킬 2건 적재 제안 → Julio 승인·커밋
 ```
 
 ---
@@ -1697,13 +1699,13 @@ PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio �
 
 | 리스크 | 대응 |
 |--------|------|
-| PM 컨텍스트 고갈 (긴 프로젝트) | 보드를 기준점으로 삼는 원칙으로 세션 재시작 비용 최소화. /status 박제 후 재시작을 운영 루틴화 |
+| PM 컨텍스트 고갈 (긴 프로젝트) | 보드를 기준점으로 삼는 원칙으로 세션 재시작 비용 최소화. /cb:status 박제 후 재시작을 운영 루틴화 |
 | 서브에이전트 보고 비대 → PM 오염 | REPORT 양식 강제 + 형식 미준수 즉시 반려. 상세는 파일/코멘트로만 |
 | 형식적 검증 (reviewer 가 대충 APPROVE) | 체크리스트에 "근거: 코드 위치 인용" 강제. 근거 없는 판정은 PM 이 반려 |
 | 무한 재작업 루프 | Rework 카운터 + 3회 시 강제 ESCALATE |
 | 에이전트의 범위 일탈 ("하는 김에" 수정) | 정의서의 경계 조항 + reviewer 의 회귀 위험 점검 + git diff 가 이슈 범위와 일치하는지 PM 확인 |
 | 보드 조작 권한 누수 | hooks 로 도구 수준 차단(§10.2), push/merge 는 permissions deny |
-| 토큰 비용 | opus 는 판단 작업(planner/architect/designer/reviewer)에만, 실행 작업은 sonnet. /run 의 동시 이슈 수 제한 |
+| 토큰 비용 | opus 는 판단 작업(planner/architect/designer/reviewer)에만, 실행 작업은 sonnet. /cb:run 의 동시 이슈 수 제한 |
 | learned 스킬 오염 (잘못된 교훈 축적) | 사람 게이트 후 커밋. 분기마다 learned 정리(가지치기) |
 
 ---
@@ -1714,7 +1716,7 @@ PM    : MS1 마감 → /retro → learned 스킬 2건 적재 제안 → Julio �
 |------|------|----------|
 | 1 | 리포지토리 + 보드 + 이슈 템플릿 + 라벨 구성, 플랫폼 CLI 인증(gh/glab, 폐쇄망 포함) | PM 세션에서 보드 읽기/쓰기 왕복 성공 |
 | 1 | CLAUDE.md + agents 7종 + pm-orchestration / platform-ops 스킬 작성 | /agents 로 정의 인식 확인 |
-| 2 | commands 8종 + settings.json 권한 + hooks | /run 으로 더미 이슈 1건이 전체 사이클 통과 |
+| 2 | commands 8종 + settings.json 권한 + hooks | /cb:run 으로 더미 이슈 1건이 전체 사이클 통과 |
 | 2 | 파일럿: 소형 실제 과제 1건(이슈 5개 내외)으로 전 단계 수행 | Phase 0→5 완주, 회고 1회 |
 | 3 | 파일럿 회고 반영: 에이전트 정의 개선, learned 적재, 재작업 빈도 측정 | REWORK 율, 사람 개입 횟수 베이스라인 확보 |
 | 4+ | 확장 판단: 반복 구간 Dynamic Workflow 화 / 병렬 필요 시 Agent Teams 검토 | — |
