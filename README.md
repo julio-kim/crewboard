@@ -23,7 +23,7 @@ Crewboard는 설치할 패키지가 없습니다. 설계 문서 한 장([CREWBOA
 서브 에이전트 크루, 보드 연동, 가드레일까지 프로젝트 수행 체계 전체가 구성됩니다.
 
 ```text
-CREWBOARD.md 복사  →  claude 실행 (Opus급 모델)  →  "부트스트랩 프로토콜대로 구성해"  →  /kickoff
+CREWBOARD.md 복사  →  claude 실행 (Opus급 모델)  →  "부트스트랩 프로토콜대로 구성해"  →  /cb:kickoff
 ```
 
 이후에는 PM 에이전트가 이슈 보드를 기준점 삼아 기획 → 설계 → 구현 → 테스트를
@@ -104,10 +104,10 @@ Crewboard의 모든 구성은 다섯 가지 원칙 위에 서 있습니다.
 | **에이전트 7종** | planner / architect / **designer**(프론트 조건부) / developer / tester / reviewer / doc-writer — 절차·산출물 예시·안티패턴·에스컬레이션 조건을 갖춘 7요소 표준 정의 |
 | **프로젝트 프로파일** | 스택·규약·환경 제약은 에이전트 정의가 아닌 프로파일에 — 같은 `.claude/` 세트를 어떤 스택의 프로젝트에도 재사용. 킥오프 때 프로파일에 맞는 스택 스킬을 확정·자동 생성 |
 | **요구사항 인테이크** | 템플릿 발급 → 사람 작성 → RFI 질문 루프 → 베이스라인 → 마일스톤 분할(사이징 3원칙). 상세 AC와 이슈는 활성 마일스톤 단위 점진 생성(rolling-wave). R-ID 부터 코드까지 끊기지 않는 추적성 |
-| **슬래시 커맨드 9종** | `/kickoff` `/intake` `/plan-sprint` `/run` `/verify` `/status` `/retro` `/guide` `/version-update` |
+| **슬래시 커맨드 9종** | `/cb:kickoff` `/cb:intake` `/cb:plan-sprint` `/cb:work-start` `/cb:verify` `/cb:status` `/cb:retro` `/cb:guide` `/cb:version-update` |
 | **검증 게이트** | reviewer의 근거 인용 판정 + tester의 독립 시나리오 + PM의 기계적 대조. 재작업 3회 시 자동 에스컬레이션 |
 | **가드레일** | push/merge 권한 차단, 보드 조작 훅 통제, CODEOWNERS로 `.claude/` 변경은 사람 리뷰 강제 |
-| **자기개선 루프** | `/retro` 가 검증된 해법을 `skills/learned/` 에 적재 — [agentskills.io](https://agentskills.io) 호환 |
+| **자기개선 루프** | `/cb:retro` 가 검증된 해법을 `skills/learned/` 에 적재 — [agentskills.io](https://agentskills.io) 호환 |
 
 ## 🚀 시작하기
 
@@ -139,7 +139,7 @@ Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 30개
 구성이 끝나면 새 세션에서 프로젝트를 시작합니다:
 
 ```text
-> /kickoff 사내 교육 신청 관리 시스템 — 신청/승인/이수 관리
+> /cb:kickoff 사내 교육 신청 관리 시스템 — 신청/승인/이수 관리
 ```
 
 ### 전체 진행 시나리오
@@ -153,7 +153,7 @@ Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 30개
 🤖  환경 점검 → 플랫폼·리포 질문 → 30개 파일 생성 → 보드·라벨 구성
 
 ─── Phase 0  착수 ────────────────────────────────────────────────────
-👤  > /kickoff 사내 교육 신청 관리 시스템 — 신청/승인/이수 관리
+👤  > /cb:kickoff 사내 교육 신청 관리 시스템 — 신청/승인/이수 관리
 🤖  프로파일 인터뷰 8항목 대화 (스택·환경·규약·일정 등)
 🤖  스택 스킬 생성 → 헌장 초안 작성
 🔑  게이트 1: 프로파일 승인       🔑  게이트 2: 헌장 승인
@@ -161,7 +161,7 @@ Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 30개
 
 ─── Phase 1  요구사항 ────────────────────────────────────────────────
 👤  INTAKE-교육시스템.md 편집 (현업 협의 포함 — 며칠 걸려도 됨)
-👤  > /intake
+👤  > /cb:intake
 🤖  회수·박제 → planner 정제 → RFI 질문서 작성
 👤  RFI 답변 (필요한 만큼 왕복)
 🔑  게이트 3: 요구사항 베이스라인 확정
@@ -178,19 +178,19 @@ Claude가 환경 점검 → 질문(플랫폼·리포지토리·보드) → 30개
 🤖  WBS → 구현 이슈 생성
 
 ─── Phase 3~4  구현·테스트  (이슈 단위 반복) ──────────────────────
-👤  > /run   또는   > /run 3
+👤  > /cb:work-start   또는   > /cb:work-start 3
 🤖  Todo 이슈 → developer → reviewer → tester → Done  (무한 반복)
     ↑ ESCALATE·NEEDS_DECISION 수신 시에만 ─────────────────── 👤 개입
-👤  > /status              현황이 궁금할 때
-👤  > /guide <질문>        규약·흐름·현재 상황 등 무엇이든
-👤  > /plan-sprint <MS>    다음 스프린트 이슈 승격할 때
-👤  > /verify #n           특정 이슈 검증만 즉시 실행
+👤  > /cb:status              현황이 궁금할 때
+👤  > /cb:guide <질문>        규약·흐름·현재 상황 등 무엇이든
+👤  > /cb:plan-sprint <MS>    다음 스프린트 이슈 승격할 때
+👤  > /cb:verify #n           특정 이슈 검증만 즉시 실행
 
 ─── Phase 5  마감  (마일스톤마다) ───────────────────────────────────
 🤖  tester: 마일스톤 회귀 테스트 (전체 시나리오)
 🤖  doc-writer: 릴리스 노트
 🔑  게이트 6: 릴리스 승인  →  머지·배포는 사람이 직접
-👤  > /retro
+👤  > /cb:retro
 🤖  회고 작성 + learned 스킬 적재 (다음 프로젝트가 더 빨라짐)
 
 ─── 다음 마일스톤:  Phase 2 → 3~4 → 5  반복 ─────────────────────
@@ -204,7 +204,7 @@ project-root/
 ├── .claude/
 │   ├── agents/                    # 서브 에이전트 7종
 │   ├── skills/                    # pm-orchestration · platform-ops · learned/
-│   ├── commands/                  # 슬래시 커맨드 8종
+│   ├── commands/                  # 슬래시 커맨드 9종
 │   ├── hooks/                     # 보드 조작 가드레일
 │   └── settings.json              # 권한 (push/merge 차단)
 ├── .github/  또는  .gitlab/       # 이슈 4종 + PR/MR 템플릿

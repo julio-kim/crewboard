@@ -44,8 +44,22 @@ jobs:
           V="${{ steps.version.outputs.version }}"
           TAG="${{ steps.version.outputs.tag }}"
 
-          # CREWBOARD 한 줄 요약
-          SUMMARY=$(grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //")
+          # CREWBOARD 변경 요약. 같은 blockquote 안에서 다음 버전 항목 전까지 수집한다.
+          SUMMARY=$(awk -v v="${V}" '
+            $0 ~ "^> v" v " 변경:" {
+              sub("^> v" v " 변경: ", "")
+              print
+              capture=1
+              next
+            }
+            capture && $0 ~ "^> v[0-9]+\\.[0-9]+ 변경:" { exit }
+            capture && $0 ~ "^> " {
+              sub("^> ?", "")
+              print
+              next
+            }
+            capture { exit }
+          ' CREWBOARD.md)
 
           # GitHub 자동 생성 노트 (What's Changed + Full Changelog 링크)
           GENERATED=$(gh api repos/${{ github.repository }}/releases/generate-notes \

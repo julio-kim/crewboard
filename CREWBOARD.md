@@ -7,7 +7,7 @@
 > 버전: v1.9 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
 > v1.9 변경: 마일스톤 마감 시 PM 안내 메시지 도입 — Phase 5 종료 후 /cb:retro 또는
 > /cb:plan-sprint 선택지를 명령어와 함께 제안, 단계 다이어그램 루프백·§12 전환 예시 보강
-> v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — 내장 /run 커맨드와의 혼동 방지
+> v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — Claude Code 내장 run 커맨드와의 혼동 방지
 > v1.7 변경: 버저닝·자기 업데이트 메커니즘 도입 — 버전 마커(.claude/CREWBOARD-VERSION), 업데이트 프로토콜(§0.8), /cb:version-update 커맨드(§8), GitHub Release 발행 체계
 > v1.6 변경: PR 중심 검증·머지 워크플로 정립 — developer PR 생성/PM Review 전이·approve/사람 머지 게이트, GitHub→Discord 머지 이벤트 수신(§7.4 신설), push/PR 권한 조정(§10.1)
 > v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /cb:guide 커맨드 신설(규약·현황 질의 — §8)
@@ -1429,8 +1429,9 @@ gh issue comment <번호> --body-file /tmp/report.md
 git push origin <feature-브랜치>
 gh pr create --draft \
   --title "<type>(#이슈번호): 요약" \
-  --body-file /tmp/pr-body.md \       # §7.5.2 템플릿 사용, Closes #이슈번호 포함
+  --body-file /tmp/pr-body.md \
   --base main
+# PR 본문은 §7.5.2 템플릿 사용, Closes #이슈번호 포함
 # 재작업 시: 새 PR 생성 금지 — 같은 브랜치에 push 하면 기존 PR 이 자동 갱신됨
 
 # ── PM: 검증 완료 후 PR 승인 ─────────────────────────────────────────────
@@ -1999,8 +2000,8 @@ PM    : 회고 게이트 통과 확인 → MS2 진입
 | 주차 | 작업 | 완료 기준 |
 |------|------|----------|
 | 1 | 리포지토리 + 보드 + 이슈 템플릿 + 라벨 구성, 플랫폼 CLI 인증(gh/glab, 폐쇄망 포함) | PM 세션에서 보드 읽기/쓰기 왕복 성공 |
-| 1 | CLAUDE.md + agents 7종 + pm-orchestration / platform-ops 스킬 작성 | /agents 로 정의 인식 확인 |
-| 2 | commands 8종 + settings.json 권한 + hooks | /cb:work-start 으로 더미 이슈 1건이 전체 사이클 통과 |
+| 1 | CLAUDE.md + agents 7종 + pm-orchestration / platform-ops 스킬 작성 | Claude Code 에이전트 목록에서 정의 인식 확인 |
+| 2 | commands 9종 + settings.json 권한 + hooks | /cb:work-start 으로 더미 이슈 1건이 전체 사이클 통과 |
 | 2 | 파일럿: 소형 실제 과제 1건(이슈 5개 내외)으로 전 단계 수행 | Phase 0→5 완주, 회고 1회 |
 | 3 | 파일럿 회고 반영: 에이전트 정의 개선, learned 적재, 재작업 빈도 측정 | REWORK 율, 사람 개입 횟수 베이스라인 확보 |
 | 4+ | 확장 판단: 반복 구간 Dynamic Workflow 화 / 병렬 필요 시 Agent Teams 검토 | — |
