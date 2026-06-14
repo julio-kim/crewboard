@@ -4,7 +4,8 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.7 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> 버전: v1.8 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — 내장 /run 커맨드와의 혼동 방지
 > v1.7 변경: 버저닝·자기 업데이트 메커니즘 도입 — 버전 마커(.claude/CREWBOARD-VERSION), 업데이트 프로토콜(§0.8), /cb:version-update 커맨드(§8), GitHub Release 발행 체계
 > v1.6 변경: PR 중심 검증·머지 워크플로 정립 — developer PR 생성/PM Review 전이·approve/사람 머지 게이트, GitHub→Discord 머지 이벤트 수신(§7.4 신설), push/PR 권한 조정(§10.1)
 > v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /cb:guide 커맨드 신설(규약·현황 질의 — §8)
@@ -102,7 +103,7 @@ glab auth status                      # 미인증이면 중단: self-managed 는
 | 12 | `.claude/skills/learned/.gitkeep` | — | 빈 디렉터리 유지용 |
 | 13 | `.claude/commands/cb/kickoff.md` | §8 표의 /cb:kickoff 행 + §9 Phase 0 절차를 본문으로 | |
 | 14 | `.claude/commands/cb/plan-sprint.md` | §8 표의 /cb:plan-sprint 행의 흐름을 번호 절차로 전개 | 보드 반영은 platform-ops 스킬(§7) 사용 명시 |
-| 15 | `.claude/commands/cb/run.md` | §8 의 run.md 예시 코드블록 | 전문 그대로 |
+| 15 | `.claude/commands/cb/work-start.md` | §8 의 work-start.md 예시 코드블록 | 전문 그대로 |
 | 16 | `.claude/commands/cb/verify.md` | §8 표 + §6-4 검증 절차를 본문으로 | |
 | 17 | `.claude/commands/cb/status.md` | §6-6 보고 양식을 본문으로 | |
 | 18 | `.claude/commands/cb/retro.md` | §11 절차를 본문으로 | |
@@ -384,7 +385,7 @@ project-root/
 │   ├── commands/cb/                   # 슬래시 커맨드 (§8) — /cb: 네임스페이스
 │   │   ├── kickoff.md                 # /cb:kickoff  — 프로젝트 착수
 │   │   ├── plan-sprint.md             # /cb:plan-sprint — 스프린트 계획
-│   │   ├── run.md                     # /cb:run — 보드 기반 자율 실행 루프
+│   │   ├── work-start.md              # /cb:work-start — 보드 기반 자율 실행 루프
 │   │   ├── verify.md                  # /cb:verify — 특정 이슈 검증 게이트
 │   │   ├── status.md                  # /cb:status — 현황 보고
 │   │   ├── retro.md                   # /cb:retro — 회고 + 스킬 적재
@@ -1673,14 +1674,14 @@ glab issue close <번호>
 | `/cb:kickoff <목표>` | 착수 | ① 프로파일 인터뷰(§4.5.2 — 스킬 후보 질문 병합) → 승인 ② 스택 스킬 생성 + settings 스택 명령 교체(§4.5.5) ③ 헌장 초안 → 승인 ④ 인테이크 모드 판정 후 템플릿 발급(§4.6) → 사람 작성 대기. 회수 후 `/cb:intake` 로 재개 |
 | `/cb:intake [파일]` | 요구사항 회수 | §4.6.3 처리: 회수·박제(인자 없으면 루트 `INTAKE-*.md` 자동 탐지) → 형식 점검 → planner 정제 → RFI 루프 → 베이스라인 게이트 → 마일스톤 분할안 → 백로그 생성 |
 | `/cb:plan-sprint <MS>` | 스프린트 계획 | 마일스톤 잔여 이슈를 우선순위/의존성으로 정렬, 이번 스프린트 Todo 승격안 제시 → 사람 확인 후 보드 반영 |
-| `/cb:run [N]` | 자율 실행 루프 | 보드에서 Todo 상위 N개(기본 1)를 §6-2 사이클로 실행. 게이트/ESCALATE 에서만 정지 |
+| `/cb:work-start [N]` | 자율 실행 루프 | 보드에서 Todo 상위 N개(기본 1)를 §6-2 사이클로 실행. 게이트/ESCALATE 에서만 정지 |
 | `/cb:verify #n` | 수동 게이트 | 특정 이슈에 reviewer+tester 를 즉시 투입해 검증만 수행 |
 | `/cb:status` | 현황 보고 | §6-6 양식으로 보고 + 트래킹 이슈에 박제 |
 | `/cb:retro` | 회고 | §11 절차 수행, learned 스킬 적재 |
 | `/cb:guide [질문]` | 매뉴얼 조회·현황 문의 | 인자 있으면 GUIDE.md 에서 근거 절(§) 찾아 답변. 인자 없거나 상황 질문이면 보드+프로파일 읽어 현재 Phase·잔여 이슈·다음 권장 액션 요약 |
 | `/cb:version-update [경로]` | 스캐폴딩 버전 갱신 | §0.8 절차. 인자 없으면 최신 릴리스(온라인) 자동 감지, 인자 있으면 로컬 CREWBOARD.md(폐쇄망). 1회 사람 승인 게이트 후 소유 파일만 갱신, 프로젝트 고유 파일 보존, 입력 파일 자동 삭제(오프라인) |
 
-예시 — `commands/cb/run.md`:
+예시 — `commands/cb/work-start.md`:
 
 ```markdown
 ---
@@ -1799,7 +1800,7 @@ docs/GUIDE.md 의 §0.8 업데이트 프로토콜을 따른다.
    ⚠️ GitHub: 이슈 생성은 3단계 1쌍(§7.1) — 생성 후 item-list 로 보드 항목 수 일치 확인
 
 ### Phase 3~4 — 구현·테스트 (이슈 단위 파이프라인)
-- §6-2 사이클 반복. `/cb:run 3` 처럼 소수 이슈를 묶어 진행
+- §6-2 사이클 반복. `/cb:work-start 3` 처럼 소수 이슈를 묶어 진행
 - **파이프라인 요약**:
   developer push + PR(Draft) 생성 → REPORT
   → PM Review 전이 → reviewer(PR diff 기준) → tester
@@ -1944,7 +1945,7 @@ PM    : 형식 검증 → "베이스라인 확정해도 될까요? 미결 질문
 Julio : (답변) 확정
 PM    : architect 디스패치 → 설계 + WBS 9건 → reviewer 설계 리뷰 APPROVE
         → "스택 후보 비교입니다. 권고는 A안" → Julio 승인
-PM    : 구현 이슈 9건 생성, /cb:run 2 시작
+PM    : 구현 이슈 9건 생성, /cb:work-start 2 시작
 dev   : #14 구현 → push + PR(Draft) #42 생성 → REPORT(PR: github.com/…/pull/42)
 PM    : 보고 확인 → In Progress→Review 전이
 rev   : #42 diff 검증 → REWORK (AC3 미충족: 예외 처리 누락, 근거 첨부)
@@ -1974,7 +1975,7 @@ PM    : MS1 마감 → /cb:retro → learned 스킬 2건 적재 제안 → Julio
 | 무한 재작업 루프 | Rework 카운터 + 3회 시 강제 ESCALATE |
 | 에이전트의 범위 일탈 ("하는 김에" 수정) | 정의서의 경계 조항 + reviewer 의 회귀 위험 점검 + git diff 가 이슈 범위와 일치하는지 PM 확인 |
 | 보드 조작 권한 누수 | hooks 로 도구 수준 차단(§10.2), push/merge 는 permissions deny |
-| 토큰 비용 | opus 는 판단 작업(planner/architect/designer/reviewer)에만, 실행 작업은 sonnet. /cb:run 의 동시 이슈 수 제한 |
+| 토큰 비용 | opus 는 판단 작업(planner/architect/designer/reviewer)에만, 실행 작업은 sonnet. /cb:work-start 의 동시 이슈 수 제한 |
 | learned 스킬 오염 (잘못된 교훈 축적) | 사람 게이트 후 커밋. 분기마다 learned 정리(가지치기) |
 
 ---
@@ -1985,7 +1986,7 @@ PM    : MS1 마감 → /cb:retro → learned 스킬 2건 적재 제안 → Julio
 |------|------|----------|
 | 1 | 리포지토리 + 보드 + 이슈 템플릿 + 라벨 구성, 플랫폼 CLI 인증(gh/glab, 폐쇄망 포함) | PM 세션에서 보드 읽기/쓰기 왕복 성공 |
 | 1 | CLAUDE.md + agents 7종 + pm-orchestration / platform-ops 스킬 작성 | /agents 로 정의 인식 확인 |
-| 2 | commands 8종 + settings.json 권한 + hooks | /cb:run 으로 더미 이슈 1건이 전체 사이클 통과 |
+| 2 | commands 8종 + settings.json 권한 + hooks | /cb:work-start 으로 더미 이슈 1건이 전체 사이클 통과 |
 | 2 | 파일럿: 소형 실제 과제 1건(이슈 5개 내외)으로 전 단계 수행 | Phase 0→5 완주, 회고 1회 |
 | 3 | 파일럿 회고 반영: 에이전트 정의 개선, learned 적재, 재작업 빈도 측정 | REWORK 율, 사람 개입 횟수 베이스라인 확보 |
 | 4+ | 확장 판단: 반복 구간 Dynamic Workflow 화 / 병렬 필요 시 Agent Teams 검토 | — |
