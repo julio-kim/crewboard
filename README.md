@@ -14,6 +14,10 @@
 > PM 에이전트가 GitHub Projects 또는 GitLab 이슈 보드를 프로젝트 현황의 기준점(SSOT)으로 삼아 오케스트레이션하고,
 > 기획 → 설계 → 구현 → 테스트 전 단계를 전문화된 서브 에이전트가 수행합니다.
 
+<p align="center">
+  <img src="assets/crewboard-infographic.png" alt="Crewboard infographic" />
+</p>
+
 ---
 
 ## 💡 어떻게 시작하나

@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1080, initial-scale=1" />
+  <title>Crewboard Infographic</title>
+  <style>
+    :root {
+      --paper: #f6f4ee;
+      --ink: #14202b;
+      --muted: #5d6874;
+      --line: #d7d2c7;
+      --panel: #ffffff;
+      --navy: #18324a;
+      --blue: #2e6f9f;
+      --green: #2d8b73;
+      --mint: #cfe9df;
+      --gold: #c99a3f;
+      --coral: #b85f49;
+      --slate: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 1080px;
+      height: 2240px;
+      margin: 0;
+      overflow: hidden;
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      color: var(--ink);
+    }
+
+    .poster {
+      position: relative;
+      width: 1080px;
+      height: 2240px;
+      padding: 54px 58px 46px;
+      background:
+        radial-gradient(circle at 86px 74px, rgba(45, 139, 115, 0.10) 0 68px, transparent 69px),
+        radial-gradient(circle at 970px 240px, rgba(46, 111, 159, 0.11) 0 138px, transparent 139px),
+        linear-gradient(90deg, rgba(20, 32, 43, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(20, 32, 43, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: auto, auto, 36px 36px, 36px 36px, auto;
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 2px solid rgba(20, 32, 43, 0.08);
+      pointer-events: none;
+    }
+
+    .poster::after {
+      content: "";
+      position: absolute;
+      left: 58px;
+      right: 58px;
+      top: 344px;
+      height: 1px;
+      background: repeating-linear-gradient(90deg, rgba(20, 32, 43, 0.28) 0 6px, transparent 6px 14px);
+      opacity: 0.45;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 22px;
+      font-size: 17px;
+      letter-spacing: 0;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .seal {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .seal-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: conic-gradient(from 45deg, var(--green), var(--blue), var(--gold), var(--green));
+      box-shadow: inset 0 0 0 7px var(--paper);
+      border: 2px solid var(--navy);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 92px;
+      line-height: 0.92;
+      letter-spacing: 0;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .subtitle {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .subtitle p {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.34;
+      color: #2d3945;
+      font-weight: 650;
+    }
+
+    .version-card {
+      background: var(--ink);
+      color: white;
+      border-radius: 2px;
+      padding: 18px 20px;
+      box-shadow: 0 14px 0 rgba(20, 32, 43, 0.09);
+    }
+
+    .version-card strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .version-card span {
+      display: block;
+      font-size: 16px;
+      line-height: 1.42;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .hero {
+      position: relative;
+      margin-top: 86px;
+      height: 394px;
+      display: grid;
+      grid-template-columns: 220px 1fr 250px;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .node {
+      background: var(--panel);
+      border: 2px solid var(--ink);
+      box-shadow: 10px 10px 0 rgba(20, 32, 43, 0.12);
+      padding: 18px;
+      position: relative;
+    }
+
+    .node.kicker::before,
+    .node.board::before {
+      content: attr(data-label);
+      position: absolute;
+      top: -18px;
+      left: 16px;
+      padding: 5px 10px;
+      background: var(--gold);
+      border: 2px solid var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .node h2,
+    .panel h2,
+    .strip h2 {
+      margin: 0 0 12px;
+      font-size: 26px;
+      line-height: 1.05;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .node p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.42;
+      color: var(--muted);
+    }
+
+    .human-sketch {
+      height: 122px;
+      margin: 16px 0 14px;
+      border: 2px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 28px, var(--coral) 0 22px, transparent 23px),
+        linear-gradient(var(--navy), var(--navy)) 50% 70px / 68px 48px no-repeat,
+        linear-gradient(135deg, transparent 44%, var(--green) 45% 55%, transparent 56%) 34px 78px / 120px 32px no-repeat;
+      border-radius: 80px 80px 12px 12px;
+    }
+
+    .approval-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .approval-list span {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      align-items: center;
+      font-size: 14px;
+      color: #354251;
+      font-weight: 700;
+    }
+
+    .approval-list b {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      background: var(--mint);
+      border: 1.5px solid var(--ink);
+      font-size: 12px;
+    }
+
+    .pm-core {
+      position: relative;
+      padding: 24px 24px 22px;
+      background:
+        linear-gradient(135deg, rgba(45, 139, 115, 0.12), transparent 42%),
+        linear-gradient(315deg, rgba(46, 111, 159, 0.12), transparent 48%),
+        #fff;
+    }
+
+    .pm-core::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 2px dashed rgba(20, 32, 43, 0.25);
+      pointer-events: none;
+    }
+
+    .pm-orb {
+      position: relative;
+      width: 188px;
+      height: 188px;
+      margin: 8px auto 18px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 47%, #fff 0 44px, transparent 45px),
+        conic-gradient(var(--green), var(--blue), var(--gold), var(--coral), var(--green));
+      border: 3px solid var(--ink);
+      box-shadow: 0 16px 0 rgba(20, 32, 43, 0.10);
+    }
+
+    .pm-orb::after {
+      content: "PM";
+      position: absolute;
+      inset: 46px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background: #fff;
+      border: 3px solid var(--ink);
+      font-size: 44px;
+      font-weight: 950;
+    }
+
+    .pm-core h2 {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .pm-core .caption {
+      margin: 0 auto;
+      width: 84%;
+      font-size: 17px;
+      line-height: 1.42;
+      text-align: center;
+      color: #3c4652;
+      font-weight: 650;
+    }
+
+    .signal-row {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .signal {
+      padding: 9px 8px;
+      background: #f2f6f4;
+      border: 1.5px solid var(--ink);
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+      color: var(--navy);
+    }
+
+    .kanban-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .kanban-col {
+      min-height: 76px;
+      background: #f5f7f7;
+      border: 1.5px solid var(--ink);
+      padding: 7px;
+    }
+
+    .kanban-col b {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .ticket {
+      height: 12px;
+      margin: 5px 0;
+      background: var(--green);
+      border: 1px solid var(--ink);
+    }
+
+    .ticket.blue {
+      background: var(--blue);
+    }
+
+    .ticket.gold {
+      background: var(--gold);
+    }
+
+    .metric-band {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .metric {
+      border: 1.5px solid var(--ink);
+      padding: 9px;
+      background: #fff9e9;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 20px;
+      font-weight: 950;
+      color: var(--coral);
+    }
+
+    .metric span {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .connectors {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .arrow {
+      position: absolute;
+      height: 3px;
+      background: var(--ink);
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -6px;
+      width: 0;
+      height: 0;
+      border-left: 13px solid var(--ink);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+
+    .arrow.a1 {
+      width: 58px;
+      left: 214px;
+      top: 178px;
+    }
+
+    .arrow.a2 {
+      width: 66px;
+      right: 244px;
+      top: 178px;
+    }
+
+    .grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 78px;
+    }
+
+    .panel,
+    .strip {
+      background: rgba(255, 255, 255, 0.86);
+      border: 2px solid rgba(20, 32, 43, 0.88);
+      box-shadow: 8px 8px 0 rgba(20, 32, 43, 0.10);
+      padding: 22px;
+      position: relative;
+    }
+
+    .panel::before,
+    .strip::before {
+      content: attr(data-no);
+      position: absolute;
+      right: 18px;
+      top: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--navy);
+      border: 2px solid var(--ink);
+      font-weight: 950;
+      font-size: 17px;
+    }
+
+    .strip::before {
+      right: auto;
+      left: 18px;
+      top: 18px;
+    }
+
+    .panel h2 {
+      padding-right: 58px;
+    }
+
+    .panel .sub {
+      margin: -5px 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .agent-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .agent {
+      display: grid;
+      grid-template-columns: 36px 88px 1fr;
+      gap: 9px;
+      align-items: center;
+      min-height: 43px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 7px;
+    }
+
+    .agent:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .agent .icon {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid var(--ink);
+      background: #f0f7f4;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .agent b {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .agent span {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .flow-rail {
+      display: grid;
+      gap: 11px;
+    }
+
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px 1fr 70px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 10px 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .step:last-child {
+      border-bottom: 0;
+    }
+
+    .step em {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: #fff;
+      font-style: normal;
+      font-weight: 950;
+      color: var(--coral);
+    }
+
+    .step b {
+      display: block;
+      font-size: 15px;
+      font-weight: 950;
+      margin-bottom: 3px;
+    }
+
+    .step span {
+      display: block;
+      font-size: 12.5px;
+      line-height: 1.25;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .step i {
+      justify-self: end;
+      padding: 5px 8px;
+      background: var(--mint);
+      border: 1.5px solid var(--ink);
+      color: var(--navy);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .guard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .guard {
+      min-height: 88px;
+      border: 1.5px solid var(--ink);
+      padding: 10px;
+      background:
+        linear-gradient(90deg, rgba(45, 139, 115, 0.10), transparent 58%),
+        #fff;
+    }
+
+    .guard b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .guard span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .wave {
+      margin-top: 12px;
+      border: 1.5px solid var(--ink);
+      background: #f5f7f7;
+      padding: 12px;
+    }
+
+    .wave-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    .wave-row b {
+      font-size: 12px;
+      color: var(--navy);
+      font-weight: 950;
+    }
+
+    .bar {
+      height: 14px;
+      border: 1.5px solid var(--ink);
+      background: repeating-linear-gradient(90deg, var(--green) 0 54px, var(--blue) 54px 108px, var(--gold) 108px 162px);
+    }
+
+    .bar.short {
+      width: 58%;
+      background: var(--coral);
+    }
+
+    .strip {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: stretch;
+      min-height: 242px;
+    }
+
+    .strip h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+      padding-left: 58px;
+      padding-right: 0;
+    }
+
+    .strip p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.44;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .proof {
+      border: 1.5px solid var(--ink);
+      background: #fff;
+      padding: 12px 10px;
+      min-height: 92px;
+    }
+
+    .proof strong {
+      display: block;
+      font-size: 22px;
+      color: var(--green);
+      font-weight: 950;
+      margin-bottom: 6px;
+    }
+
+    .proof span {
+      display: block;
+      font-size: 11.5px;
+      line-height: 1.25;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .loop-diagram {
+      position: relative;
+      height: 190px;
+      border: 1.5px solid var(--ink);
+      background: #f7faf8;
+      overflow: hidden;
+      padding: 14px;
+    }
+
+    .loop-orbit {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 128px;
+      height: 128px;
+      transform: translate(-50%, -50%);
+      border: 2px dashed rgba(20, 32, 43, 0.42);
+      border-radius: 50%;
+    }
+
+    .loop-orbit::after {
+      content: "";
+      position: absolute;
+      right: 2px;
+      top: 18px;
+      width: 0;
+      height: 0;
+      border-left: 12px solid var(--ink);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      transform: rotate(31deg);
+    }
+
+    .loop-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 58px;
+      height: 58px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--navy);
+      font-size: 12px;
+      line-height: 1.05;
+      text-align: center;
+      font-weight: 950;
+    }
+
+    .loop-step {
+      position: absolute;
+      width: 106px;
+      min-height: 44px;
+      padding: 7px 8px;
+      border: 1.5px solid var(--ink);
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(20, 32, 43, 0.08);
+    }
+
+    .loop-step b {
+      display: block;
+      font-size: 11px;
+      line-height: 1.1;
+      color: var(--ink);
+      font-weight: 950;
+      margin-bottom: 2px;
+    }
+
+    .loop-step span {
+      display: block;
+      font-size: 9.5px;
+      line-height: 1.15;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .loop-step::before {
+      content: attr(data-step);
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      left: -8px;
+      top: -8px;
+      display: grid;
+      place-items: center;
+      background: var(--coral);
+      border: 1px solid var(--ink);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
+    }
+
+    .loop-step.s1 {
+      left: 16px;
+      top: 10px;
+    }
+
+    .loop-step.s2 {
+      right: 18px;
+      top: 14px;
+    }
+
+    .loop-step.s3 {
+      right: 18px;
+      bottom: 16px;
+    }
+
+    .loop-step.s4 {
+      left: 16px;
+      bottom: 12px;
+    }
+
+    .footer {
+      position: absolute;
+      left: 58px;
+      right: 58px;
+      bottom: 40px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      border-top: 2px solid rgba(20, 32, 43, 0.18);
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .tag-cloud span {
+      padding: 5px 9px;
+      border: 1.5px solid var(--ink);
+      background: #fff;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 850;
+    }
+  </style>
+</head>
+<body>
+  <main class="poster" aria-label="Crewboard project infographic">
+    <div class="topline">
+      <div class="seal"><span class="seal-mark"></span><span>Crewboard v1.9</span></div>
+      <div>Claude Code multi-agent project system</div>
+    </div>
+
+    <h1>Crewboard</h1>
+    <section class="subtitle">
+      <p>프로젝트 보드를 기준으로 PM Agent가 역할별 서브에이전트를 조율하는 작업 운영 체계.</p>
+      <div class="version-card">
+        <strong>Board-led workflow</strong>
+        <span>기획, 설계, 구현, 검증, 릴리스, 회고를 이슈와 산출물 기준으로 연결합니다.</span>
+      </div>
+    </section>
+
+    <section class="hero">
+      <div class="node kicker" data-label="HUMAN">
+        <h2>승인과 방향</h2>
+        <p>사람은 요구사항 확정, 기술 선택, 릴리스 승인 같은 결정 지점에 개입합니다.</p>
+        <div class="human-sketch" aria-hidden="true"></div>
+        <div class="approval-list">
+          <span><b>1</b>프로파일 승인</span>
+          <span><b>2</b>요구사항 베이스라인</span>
+          <span><b>3</b>릴리스 승인</span>
+        </div>
+      </div>
+
+      <div class="node pm-core">
+        <div class="pm-orb" aria-hidden="true"></div>
+        <h2>PM Agent = Main Session</h2>
+        <p class="caption">계획, 위임, 검증 게이트, 상태 전이를 맡고 직접 구현하지 않습니다.</p>
+        <div class="signal-row">
+          <div class="signal">Dispatch</div>
+          <div class="signal">Verify</div>
+          <div class="signal">Transition</div>
+        </div>
+      </div>
+
+      <div class="node board" data-label="SSOT">
+        <h2>Project Board</h2>
+        <p>상태, 결정, 산출물 링크가 모두 이슈 보드에 남습니다.</p>
+        <div class="kanban-mini">
+          <div class="kanban-col"><b>Todo</b><div class="ticket"></div><div class="ticket gold"></div></div>
+          <div class="kanban-col"><b>Review</b><div class="ticket blue"></div></div>
+          <div class="kanban-col"><b>Done</b><div class="ticket"></div><div class="ticket blue"></div></div>
+        </div>
+        <div class="metric-band">
+          <div class="metric"><strong>AC</strong><span>Acceptance Criteria</span></div>
+          <div class="metric"><strong>PR</strong><span>Evidence Gate</span></div>
+        </div>
+      </div>
+
+      <div class="connectors" aria-hidden="true">
+        <span class="arrow a1"></span>
+        <span class="arrow a2"></span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel" data-no="01">
+        <h2>Specialized Crew</h2>
+        <p class="sub">역할별 책임을 분리하고, 상세 산출물은 파일과 이슈 코멘트에 남깁니다.</p>
+        <div class="agent-list">
+          <div class="agent"><span class="icon">P</span><b>planner</b><span>인테이크 정제, FR/AC, RFI</span></div>
+          <div class="agent"><span class="icon">A</span><b>architect</b><span>API, ERD, ADR, WBS 분해</span></div>
+          <div class="agent"><span class="icon">D</span><b>designer</b><span>UX flow, IA, component contract</span></div>
+          <div class="agent"><span class="icon">C</span><b>developer</b><span>코드, 테스트, Draft PR</span></div>
+          <div class="agent"><span class="icon">T</span><b>tester</b><span>독립 시나리오, TR 리포트</span></div>
+          <div class="agent"><span class="icon">R</span><b>reviewer</b><span>근거 인용 검증, REWORK 판정</span></div>
+          <div class="agent"><span class="icon">W</span><b>doc-writer</b><span>릴리스 노트, 운영 문서</span></div>
+        </div>
+      </article>
+
+      <article class="panel" data-no="02">
+        <h2>Lifecycle Rail</h2>
+        <p class="sub">모든 단계는 이슈와 수용 기준을 기준으로 진행됩니다.</p>
+        <div class="flow-rail">
+          <div class="step"><em>0</em><div><b>Kickoff</b><span>프로파일 인터뷰, 스택 스킬, 헌장</span></div><i>Gate</i></div>
+          <div class="step"><em>1</em><div><b>Intake</b><span>사람이 쓴 요구사항을 불변 원천으로 박제</span></div><i>RFI</i></div>
+          <div class="step"><em>2</em><div><b>Design</b><span>설계 산출물과 UX 명세를 reviewer가 검증</span></div><i>Gate</i></div>
+          <div class="step"><em>3</em><div><b>Build</b><span>developer가 AC 기준 코드와 테스트 작성</span></div><i>PR</i></div>
+          <div class="step"><em>4</em><div><b>Verify</b><span>reviewer + tester + PM 최종 대조</span></div><i>Proof</i></div>
+          <div class="step"><em>5</em><div><b>Release</b><span>사람 머지와 릴리스 승인 후 Done 전이</span></div><i>Gate</i></div>
+          <div class="step"><em>6</em><div><b>Retro</b><span>검증된 해법을 learned skill로 적재</span></div><i>Loop</i></div>
+        </div>
+      </article>
+
+      <article class="panel" data-no="03">
+        <h2>Control System</h2>
+        <p class="sub">보드 상태, PR, 권한 설정, 검증 기록으로 운영 규칙을 관리합니다.</p>
+        <div class="guard-grid">
+          <div class="guard"><b>Builder / Validator Split</b><span>구현자와 검증자를 분리해 독립 검토를 유지합니다.</span></div>
+          <div class="guard"><b>PM-only Transition</b><span>보드 상태 전이와 이슈 close는 PM 전권입니다.</span></div>
+          <div class="guard"><b>Evidence Before Done</b><span>REPORT, VERDICT, TR, PR 링크가 모두 남아야 합니다.</span></div>
+          <div class="guard"><b>Human Merge Gate</b><span>PR approve 후 실제 머지는 사람이 수행합니다.</span></div>
+        </div>
+      </article>
+
+      <article class="panel" data-no="04">
+        <h2>Rolling-wave Scope</h2>
+        <p class="sub">큰 프로젝트는 전체 범위를 먼저 고정하고, 상세 AC는 활성 마일스톤마다 적시에 작성합니다.</p>
+        <div class="wave">
+          <div class="wave-row"><b>Baseline FR</b><div class="bar"></div></div>
+          <div class="wave-row"><b>MS1 AC</b><div class="bar short"></div></div>
+          <div class="wave-row"><b>MS2+</b><div class="bar" style="opacity:.42"></div></div>
+        </div>
+        <p class="sub" style="margin-top:14px;">FR 전수 추적성은 유지하고, 먼 마일스톤의 상세는 낡지 않게 미룹니다.</p>
+      </article>
+    </section>
+
+    <section class="strip" data-no="05">
+      <div>
+        <h2>Evidence-based Delivery</h2>
+        <p>각 이슈는 수용 기준, 구현 계획, 코드/테스트 근거, 리뷰 판정, 테스트 리포트, PR 머지 기록을 함께 남깁니다.</p>
+        <div class="proof-grid">
+          <div class="proof"><strong>100%</strong><span>AC 항목별 증거 매핑</span></div>
+          <div class="proof"><strong>3x</strong><span>재작업 한도 도달 시 ESCALATE</span></div>
+          <div class="proof"><strong>SSOT</strong><span>보드만 읽어도 재개 가능</span></div>
+        </div>
+      </div>
+      <div class="loop-diagram" aria-hidden="true">
+        <div class="loop-orbit"></div>
+        <div class="loop-center">Learned<br>Loop</div>
+        <div class="loop-step s1" data-step="1"><b>Retro Review</b><span>반복 실패 원인 확인</span></div>
+        <div class="loop-step s2" data-step="2"><b>Pattern</b><span>검증된 해법 정리</span></div>
+        <div class="loop-step s3" data-step="3"><b>Skill</b><span>learned skill 저장</span></div>
+        <div class="loop-step s4" data-step="4"><b>Reuse</b><span>다음 프로젝트에 적용</span></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Crewboard keeps multi-agent project work aligned around the project board.</div>
+      <div class="tag-cloud">
+        <span>Claude Code</span>
+        <span>Subagents</span>
+        <span>Skills</span>
+        <span>Hooks</span>
+        <span>GitHub / GitLab</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
