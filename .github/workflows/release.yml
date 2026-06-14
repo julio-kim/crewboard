@@ -36,12 +36,25 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Extract changelog for this version
+      - name: Build release notes
         if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           V="${{ steps.version.outputs.version }}"
-          grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //" > /tmp/release-notes.txt
-          echo "Changelog:"; cat /tmp/release-notes.txt
+          TAG="${{ steps.version.outputs.tag }}"
+
+          # CREWBOARD 한 줄 요약
+          SUMMARY=$(grep "v${V} 변경:" CREWBOARD.md | sed -E "s/^> v${V} 변경: //")
+
+          # GitHub 자동 생성 노트 (What's Changed + Full Changelog 링크)
+          GENERATED=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="${TAG}" \
+            --jq '.body')
+
+          # 요약 + 자동 노트 결합
+          printf "## Summary\n%s\n\n---\n\n%s\n" "$SUMMARY" "$GENERATED" > /tmp/release-notes.txt
+          echo "Release notes:"; cat /tmp/release-notes.txt
 
       - name: Create release and upload asset
         if: steps.check_tag.outputs.exists == 'false'
