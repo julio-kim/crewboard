@@ -4,7 +4,9 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.8 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> 버전: v1.9 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> v1.9 변경: 마일스톤 마감 시 PM 안내 메시지 도입 — Phase 5 종료 후 /cb:retro 또는
+> /cb:plan-sprint 선택지를 명령어와 함께 제안, 단계 다이어그램 루프백·§12 전환 예시 보강
 > v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — 내장 /run 커맨드와의 혼동 방지
 > v1.7 변경: 버저닝·자기 업데이트 메커니즘 도입 — 버전 마커(.claude/CREWBOARD-VERSION), 업데이트 프로토콜(§0.8), /cb:version-update 커맨드(§8), GitHub Release 발행 체계
 > v1.6 변경: PR 중심 검증·머지 워크플로 정립 — developer PR 생성/PM Review 전이·approve/사람 머지 게이트, GitHub→Discord 머지 이벤트 수신(§7.4 신설), push/PR 권한 조정(§10.1)
@@ -611,6 +613,7 @@ PM 주관 절차 (프로파일 인터뷰와 같은 흐름에서 수행):
   (보드에는 전체 범위가 보이되, 상세 이슈는 첫 마일스톤분만 → G2 SSOT 불침해)
 - 후속 마일스톤: 해당 마일스톤이 설계(Phase 2)에 진입하는 직전(Phase 2 step 0)에
   PM → planner 를 디스패치해 해당 마일스톤 FR의 AC를 정제하고 이슈를 생성한다.
+  (단, 직전 마일스톤 회고 게이트 통과 후 — §Phase 2 step 0)
 - **GitHub 주의**: "이슈 생성"은 3단계 1쌍(create + item-add + item-edit Backlog) —
   §7.1 gh CLI 블록 참조. create 만으로는 보드에 올라오지 않는다.
 
@@ -1247,9 +1250,12 @@ description: >
   Phase 3  구현      → developer ↔ reviewer (이슈 단위 루프)
   Phase 4  테스트    → tester → 결함 루프 (developer 재작업)
   Phase 5  마감      → doc-writer → [사람 게이트] 릴리스 승인 → /cb:retro
+                       → ⟳ (다음 마일스톤 있으면 Phase 2 로, 회고 게이트 통과 후)
 
   ※ Phase 3~4 는 이슈 단위로 파이프라인 병행 가능. 단 Phase 2 게이트 통과 전
     구현 이슈를 In Progress 로 올리지 않는다.
+  ※ 마일스톤 경계 = 회고 소프트 게이트 — 다음 마일스톤 Phase 2 진입 전
+    직전 마일스톤 /cb:retro 완료(또는 명시적 생략 승인) 필수 (§Phase 2 step 0).
 
 ## 2. 이슈 단위 실행 루프 (Phase 3~4 의 기본 사이클)
 
@@ -1791,6 +1797,7 @@ docs/GUIDE.md 의 §0.8 업데이트 프로토콜을 따른다.
 0. **(rolling-wave 적용 시, 매 마일스톤 진입 직전)** PM → planner 디스패치:
    이번 마일스톤 FR 의 **상세 AC 적시 정제** (§4.6.1a 방식) + 해당 마일스톤 FR 이슈 생성.
    새 사람 게이트 아님 — 베이스라인에서 이미 합의된 FR 의 상세화
+
 1. PM → architect 디스패치 **(프론트 있으면 designer 병행 디스패치 — UX 설계)**
 2. architect: 설계 산출물(API·ERD·ADR) + WBS 제안 → REPORT (기술 선택은 NEEDS_DECISION)
    designer(조건부): 플로우·와이어프레임·컴포넌트 명세·디자인 토큰 + developer 인계 노트 → REPORT
@@ -1814,7 +1821,12 @@ docs/GUIDE.md 의 §0.8 업데이트 프로토콜을 따른다.
 1. tester: 마일스톤 회귀 테스트 (전체 시나리오)
 2. doc-writer: 릴리스 노트/가이드
 3. **[사람 게이트]** 릴리스 승인 (머지/배포는 사람 또는 사람 입회 하에)
-4. `/cb:retro`
+4. PM: 마일스톤 종료 안내 메시지 전송 —
+   ```
+   ✅ [마일스톤명] 마감 완료. 다음 중 하나를 선택해주세요:
+   • 회고 먼저 진행 → /cb:retro
+   • 바로 다음 마일스톤 시작 → /cb:plan-sprint <다음MS>
+   ```
 
 ---
 
@@ -1961,6 +1973,8 @@ PM    : Done 전이 (이슈 #14 Closes 로 자동 close 확인)
 PM    : /cb:status — MS1 7/9 완료, #18 Blocked(GHE 프록시 이슈, 결정 필요)
 Julio : (결정)
 PM    : MS1 마감 → /cb:retro → learned 스킬 2건 적재 제안 → Julio 승인·커밋
+PM    : 회고 게이트 통과 확인 → MS2 진입
+        (Phase 2 step 0: planner 디스패치 — MS2 FR 상세 AC 정제·이슈 생성)
 ```
 
 ---
