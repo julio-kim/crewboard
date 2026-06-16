@@ -4,21 +4,21 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.11 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
->
-> | 버전 | 변경 내용 |
-> |------|----------|
-> | **v1.11** | 버전 비교 float 변환 버그 수정 — major.minor 정수 분리 비교 명시 (§0.8.3, §8) |
-> | **v1.10** | tester background 디스패치 버그 수정 — Testing 이슈 완료 증거 확인 절차(§4), foreground 강제(§6) |
-> | **v1.9** | 마일스톤 마감 시 PM 안내 메시지 도입, /cb:retro·/cb:plan-sprint 선택지 제안 |
-> | **v1.8** | /cb:run → /cb:work-start 이름 변경 (Claude Code 내장 run 커맨드와의 혼동 방지) |
-> | **v1.7** | 버저닝·자기 업데이트 메커니즘 도입 — CREWBOARD-VERSION 마커, §0.8, /cb:version-update |
-> | **v1.6** | PR 중심 검증·머지 워크플로 정립, GitHub→Discord 머지 이벤트 수신(§7.4) |
-> | **v1.5** | 점진적 상세화(rolling-wave) 도입, 마일스톤 사이징 3원칙, /cb:guide 신설 |
-> | **v1.4** | 요구사항 인테이크 메커니즘 신설(§4.6), planner 역할 재편(발명→정제) |
-> | **v1.3** | 리포지토리 메타 문서 세트 신설(§7.5), GitHub/GitLab 플랫폼 선택 지원 |
-> | **v1.2** | §0 부트스트랩 프로토콜 추가 |
-> | **v1.1** | 프로젝트 프로파일 메커니즘 신설(§4.5), 에이전트 정의 표준 7요소 도입 |
+버전: v1.11 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+
+| 버전 | 변경 내용 |
+|------|----------|
+| **v1.11** | 버전 비교 float 변환 버그 수정 — major.minor 정수 분리 비교 명시 (§0.8.3, §8) |
+| **v1.10** | tester background 디스패치 버그 수정 — Testing 이슈 완료 증거 확인 절차(§4), foreground 강제(§6) |
+| **v1.9** | 마일스톤 마감 시 PM 안내 메시지 도입, /cb:retro·/cb:plan-sprint 선택지 제안 |
+| **v1.8** | /cb:run → /cb:work-start 이름 변경 (Claude Code 내장 run 커맨드와의 혼동 방지) |
+| **v1.7** | 버저닝·자기 업데이트 메커니즘 도입 — CREWBOARD-VERSION 마커, §0.8, /cb:version-update |
+| **v1.6** | PR 중심 검증·머지 워크플로 정립, GitHub→Discord 머지 이벤트 수신(§7.4) |
+| **v1.5** | 점진적 상세화(rolling-wave) 도입, 마일스톤 사이징 3원칙, /cb:guide 신설 |
+| **v1.4** | 요구사항 인테이크 메커니즘 신설(§4.6), planner 역할 재편(발명→정제) |
+| **v1.3** | 리포지토리 메타 문서 세트 신설(§7.5), GitHub/GitLab 플랫폼 선택 지원 |
+| **v1.2** | §0 부트스트랩 프로토콜 추가 |
+| **v1.1** | 프로젝트 프로파일 메커니즘 신설(§4.5), 에이전트 정의 표준 7요소 도입 |
 
 ---
 
