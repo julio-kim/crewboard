@@ -3,8 +3,9 @@
 > PM Agent가 GitHub Projects 또는 GitLab 이슈 보드를 기반으로 오케스트레이션하고,
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
->
-버전: v1.11 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+
+* 버전: v1.11
+* 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
 
 | 버전 | 변경 내용 |
 |------|----------|
