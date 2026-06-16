@@ -4,7 +4,10 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.9 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> 버전: v1.10 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+> v1.10 변경: tester background 디스패치 버그 수정 — PM 세션 시작 시 Testing 이슈 완료 증거
+> 확인 절차 추가(§4 세션 시작 3단계), tester foreground 디스패치 강제 및 background 금지
+> 명시(§6-§2 APPROVE 분기) — context compaction 후 task 소멸로 인한 상태 불일치 방지
 > v1.9 변경: 마일스톤 마감 시 PM 안내 메시지 도입 — Phase 5 종료 후 /cb:retro 또는
 > /cb:plan-sprint 선택지를 명령어와 함께 제안, 단계 다이어그램 루프백·§12 전환 예시 보강
 > v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — Claude Code 내장 run 커맨드와의 혼동 방지
@@ -434,9 +437,12 @@ project-root/
 ## 세션 시작 시
 1. docs/00-charter/project-profile.md 를 읽는다. 없으면 /cb:kickoff 미수행 상태이므로
    어떤 작업도 시작하지 말고 /cb:kickoff 부터 제안한다.
-2. `gh` 로 보드 현황을 읽고 In Progress / Review 이슈를 파악한다.
-3. 진행 중이던 작업이 있으면 해당 이슈의 최근 코멘트를 읽고 재개한다.
-4. 현황 요약을 한 뒤 다음 액션을 제안한다.
+2. `gh` 로 보드 현황을 읽고 In Progress / Review / Testing 이슈를 파악한다.
+3. **Testing 상태 이슈가 있으면**: 이슈 코멘트에서 tester REPORT 코멘트와
+   `docs/30-test/TR-<이슈번호>.md` 존재 여부를 확인한다.
+   증거가 없으면 tester 재디스패치 — 이전 세션 종료 시 task 가 소멸했을 가능성이 높다.
+4. 진행 중이던 작업이 있으면 해당 이슈의 최근 코멘트를 읽고 재개한다.
+5. 현황 요약을 한 뒤 다음 액션을 제안한다.
 
 ## 위임 시
 - 이슈 번호, 수용 기준, 산출물 위치 규약을 디스패치 프롬프트에 반드시 포함한다.
@@ -1268,7 +1274,11 @@ description: >
        → reviewer 디스패치 (PR diff 기준 코드 검증) → VERDICT 수신
          · REWORK   → 사유 첨부 + 같은 브랜치/PR 에 developer 재디스패치
                       (Review → In Progress 복귀. 재작업은 push 로 PR 자동 갱신)
-         · APPROVE  → tester 디스패치 (Review → Testing 전이) → PASS/FAIL
+         · APPROVE  → tester **foreground** 디스패치 (Review → Testing 전이) → PASS/FAIL
+                      ⚠️ background 디스패치 금지 — 세션 종료 시 완료 알림 유실 →
+                      Testing 상태 이슈의 실제 완료 여부를 보드로 판단 불가(§1.2-2 위반).
+                      foreground 대기가 어려우면 세션을 유지하거나, 재개 시 세션 시작
+                      3단계(Testing 이슈 코멘트 확인)로 복구한다.
                       · FAIL   → 결함 코멘트 첨부, developer 재디스패치 (Testing → In Progress)
                       · PASS   → PM: AC 최종 대조(§4 검증 게이트) 완료 후
                                  gh pr ready <N>
