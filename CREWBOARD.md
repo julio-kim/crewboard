@@ -4,20 +4,21 @@
 > 전문화된 서브 에이전트들이 기획→설계→구현→테스트 전 단계를 수행하며,
 > PM이 감독·관리·검증하는 구조의 설계 문서.
 >
-> 버전: v1.10 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
-> v1.10 변경: tester background 디스패치 버그 수정 — PM 세션 시작 시 Testing 이슈 완료 증거
-> 확인 절차 추가(§4 세션 시작 3단계), tester foreground 디스패치 강제 및 background 금지
-> 명시(§6-§2 APPROVE 분기) — context compaction 후 task 소멸로 인한 상태 불일치 방지
-> v1.9 변경: 마일스톤 마감 시 PM 안내 메시지 도입 — Phase 5 종료 후 /cb:retro 또는
-> /cb:plan-sprint 선택지를 명령어와 함께 제안, 단계 다이어그램 루프백·§12 전환 예시 보강
-> v1.8 변경: /cb:run → /cb:work-start 로 이름 변경 — Claude Code 내장 run 커맨드와의 혼동 방지
-> v1.7 변경: 버저닝·자기 업데이트 메커니즘 도입 — 버전 마커(.claude/CREWBOARD-VERSION), 업데이트 프로토콜(§0.8), /cb:version-update 커맨드(§8), GitHub Release 발행 체계
-> v1.6 변경: PR 중심 검증·머지 워크플로 정립 — developer PR 생성/PM Review 전이·approve/사람 머지 게이트, GitHub→Discord 머지 이벤트 수신(§7.4 신설), push/PR 권한 조정(§10.1)
-> v1.5 변경: 점진적 상세화(rolling-wave) 도입 — 규모 프로젝트에서 상세 AC와 백로그 이슈를 활성 마일스톤 단위로 적시 생성(§4.6.1a), 마일스톤 사이징 3원칙 추가(§4.6.3), /cb:guide 커맨드 신설(규약·현황 질의 — §8)
-> v1.4 변경: 요구사항 인테이크 메커니즘 신설(§4.6 — 템플릿 발급→사람 작성→회수→정제 루프), 킥오프/Phase 1 재편(planner 역할을 "도출"에서 "정제"로), 마일스톤 분할 절차 추가
-> v1.3 변경: 리포지토리 메타 문서 세트 신설(§7.5 — PR/MR·결함·변경요청 템플릿, CONTRIBUTING, CODEOWNERS), GitHub/GitLab 플랫폼 선택 지원
-> v1.2 변경: §0 부트스트랩 프로토콜 추가 — 이 문서 자체를 프로젝트 자동 구성 가이드로 사용 가능
-> v1.1 변경: 프로젝트 프로파일 메커니즘 신설(§4.5), 에이전트 정의 표준 7요소 도입 및 전 에이전트 보강(§5), 스택 하드코딩 제거
+> 버전: v1.11 / 대상 런타임: Claude Code (subagents + skills + hooks + slash commands)
+>
+> | 버전 | 변경 내용 |
+> |------|----------|
+> | **v1.11** | 버전 비교 float 변환 버그 수정 — major.minor 정수 분리 비교 명시 (§0.8.3, §8) |
+> | **v1.10** | tester background 디스패치 버그 수정 — Testing 이슈 완료 증거 확인 절차(§4), foreground 강제(§6) |
+> | **v1.9** | 마일스톤 마감 시 PM 안내 메시지 도입, /cb:retro·/cb:plan-sprint 선택지 제안 |
+> | **v1.8** | /cb:run → /cb:work-start 이름 변경 (Claude Code 내장 run 커맨드와의 혼동 방지) |
+> | **v1.7** | 버저닝·자기 업데이트 메커니즘 도입 — CREWBOARD-VERSION 마커, §0.8, /cb:version-update |
+> | **v1.6** | PR 중심 검증·머지 워크플로 정립, GitHub→Discord 머지 이벤트 수신(§7.4) |
+> | **v1.5** | 점진적 상세화(rolling-wave) 도입, 마일스톤 사이징 3원칙, /cb:guide 신설 |
+> | **v1.4** | 요구사항 인테이크 메커니즘 신설(§4.6), planner 역할 재편(발명→정제) |
+> | **v1.3** | 리포지토리 메타 문서 세트 신설(§7.5), GitHub/GitLab 플랫폼 선택 지원 |
+> | **v1.2** | §0 부트스트랩 프로토콜 추가 |
+> | **v1.1** | 프로젝트 프로파일 메커니즘 신설(§4.5), 에이전트 정의 표준 7요소 도입 |
 
 ---
 
@@ -237,7 +238,9 @@ bootstrapped: <YYYY-MM-DD>
      `gh` 미인증·불가 시 폴백: raw URL WebFetch
      (`https://github.com/<owner>/<repo>/releases/latest/download/CREWBOARD.md`)
 
-3. **버전 비교**: 새 문서 7번 줄 `버전:` 파싱. 새 버전 ≤ 현재 버전이면
+3. **버전 비교**: 새 문서 7번 줄 `버전:` 파싱. 버전 형식은 `<major>.<minor>` 이며
+   **float 변환 금지** — `.` 을 기준으로 분리해 major → minor 순으로 정수 비교한다
+   (예: `1.10 > 1.9`, `2.0 > 1.10`). 새 버전 ≤ 현재 버전이면
    "현재 버전이 최신입니다" 보고 후 종료.
 
 4. **변경 요약 제시**: 새 문서 changelog (8번 줄~) 에서 현재 버전 초과분만 추려
@@ -1761,7 +1764,8 @@ docs/GUIDE.md 의 §0.8 업데이트 프로토콜을 따른다.
    - 인자 없음(온라인): source 저장소 최신 릴리스 에셋 다운로드
      `gh release download --repo <source> --pattern "CREWBOARD.md" -O /tmp/CREWBOARD-new.md`
      (gh 불가 시 raw URL WebFetch 폴백)
-3. 버전 비교 — 새 버전 ≤ 현재이면 "현재 버전이 최신입니다" 보고 후 종료
+3. 버전 비교 — `.` 분리 후 major → minor 정수 비교 (float 변환 금지, 예: 1.10 > 1.9).
+   새 버전 ≤ 현재이면 "현재 버전이 최신입니다" 보고 후 종료
 4. changelog 에서 현재 버전 초과 변경분만 추려 요약 제시
 5. [사람 게이트] §0.8.1 분류표 기준 재생성·병합 대상의 diff 표시 → 승인
 6. 적용 (재생성/병합/보존 — §0.8.1 준수) → `CREWBOARD-VERSION` 갱신
